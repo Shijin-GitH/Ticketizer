@@ -10,6 +10,7 @@ function Header({
   title,
   subtitle,
   onclick,
+  action = true,
 }) {
   return (
     <div className="flex flex-col gap-8">
@@ -23,10 +24,12 @@ function Header({
         </div>
         <img src={Logo} alt="Logo" className="w-36" />
       </div>
-      <div className="flex justify-between items-center text-white text-xl">
-        <p>{text}</p>
-        <Link text={link_text} icon={icon} onClick={onclick} />
-      </div>
+      {action && (
+        <div className="flex justify-between items-center text-white text-xl">
+          <p>{text}</p>
+          <Link text={link_text} icon={icon} onClick={onclick} />
+        </div>
+      )}
       <div className="flex flex-col gap-3">
         <h1 className="text-white text-5xl font-bold">{title}</h1>
         <p className="text-white text-xl">{subtitle}</p>

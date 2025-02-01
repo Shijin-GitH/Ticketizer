@@ -94,7 +94,7 @@ function Login() {
           link_text="Create an account"
           title="Login"
           subtitle="Enter your credentials to continue"
-          onclick={() => (window.location.href = "/signup")}
+          onclick={() => (window.location.href = "/signup")}k
         />
         <Field
           state={email}

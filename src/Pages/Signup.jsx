@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { IoChevronForward } from "react-icons/io5";
-import { MdOutlinePersonAddAlt } from "react-icons/md";
+import { MdOutlinePersonAddAlt, MdPerson } from "react-icons/md";
 import { MdAlternateEmail } from "react-icons/md";
-import { MdOutlinePassword } from "react-icons/md";
-import { BsFillPersonCheckFill } from "react-icons/bs";
+import { BsFillPersonCheckFill, BsPencil, BsPersonBadge } from "react-icons/bs";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "../Components/Modal/Modal";
@@ -12,8 +11,11 @@ import Header from "../Components/Modal/Header";
 import Field from "../Components/Input/Field";
 import Password from "../Components/Input/Password";
 import Button from "../Components/Button/Button";
+import { BiPhone } from "react-icons/bi";
 
 function Signup() {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -23,6 +25,14 @@ function Signup() {
     const passwordRegex =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
+    if (!name) {
+      toast.error("Name is required");
+      return;
+    }
+    if (!phone) {
+      toast.error("Phone number is required");
+      return;
+    }
     if (!email) {
       toast.error("Email is required");
       return;
@@ -48,12 +58,16 @@ function Signup() {
 
     axios
       .post("/signup", {
+        name,
+        phone,
         email: email.toLowerCase(),
         password,
       })
       .then((res) => {
         toast.success("Signup Successful");
-        window.location.href = "/login";
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 3000); 
       })
       .catch((err) => {
         if (err.response) {
@@ -94,6 +108,22 @@ function Signup() {
           onclick={() => (window.location.href = "/login")}
         />
         <Field
+          state={name}
+          setState={setName}
+          text="Name"
+          required
+          icon={<BsPersonBadge />}
+          placeholder="John Doe"
+        />
+        <Field
+          state={phone}
+          setState={setPhone}
+          text="Phone Number"
+          required
+          icon={<BiPhone />}
+          placeholder="1234567890"
+        />
+        <Field
           state={email}
           setState={setEmail}
           text="Email"
@@ -112,7 +142,7 @@ function Signup() {
           text="Confirm Password"
         />
         <Button
-          text="Next"
+          text="Sign up"
           width={"50%"}
           iconleft={
             <MdOutlinePersonAddAlt className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out -translate-x-5 text-xl" />
