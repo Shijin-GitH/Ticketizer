@@ -4,3 +4,7 @@
   font-family: "CircularStd-Book";
   src: url("./assets/CircularStd-Book.woff") format("woff");
 } */
+
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
