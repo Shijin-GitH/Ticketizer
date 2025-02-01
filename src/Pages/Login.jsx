@@ -91,11 +91,9 @@ function Login() {
           text="Welcome Back!"
           icon={<MdOutlinePersonAddAlt />}
           link_text="Create an account"
+          title="Login"
+          subtitle="Enter your credentials to continue"
         />
-        <div className="flex flex-col gap-3">
-          <h1 className="text-white text-5xl font-bold">Login</h1>
-          <p className="text-white text-xl">Enter your credentials to login</p>
-        </div>
         <Field
           state={email}
           setState={setEmail}
