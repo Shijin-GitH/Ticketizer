@@ -17,6 +17,7 @@ import Header from "../Components/Modal/Header";
 import Link from "../Components/Button/Link";
 import Field from "../Components/Input/Field";
 import Password from "../Components/Input/Password";
+import Button from "../Components/Modal/Button";
 
 function Login() {
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
@@ -121,16 +122,17 @@ function Login() {
             onClick={toggleStayLoggedIn}
           />
         </div>
-        <div className="h-16 w-full flex my-5 justify-center">
-          <button
-            className="bg-white text-black flex group justify-between items-center px-5 rounded-lg h-12 w-60 cursor-pointer text-xl font-bold hover:bg-black hover:text-white border border-white hover:border-white transition ease-in-out duration-300"
-            onClick={handleLogin}
-          >
+        <Button
+          text="Login"
+          width={"50%"}
+          iconleft={
             <BsFillPersonCheckFill className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out -translate-x-5 text-xl" />
-            Login
+          }
+          iconright={
             <IoChevronForward className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out translate-x-5" />
-          </button>
-        </div>
+          }
+          handleLogin={handleLogin}
+        />
       </Modal>
       <ToastContainer />
     </>
