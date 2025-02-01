@@ -1,29 +1,27 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { IoChevronBack } from "react-icons/io5";
 import { IoChevronForward } from "react-icons/io5";
 import { MdOutlinePersonAddAlt } from "react-icons/md";
 import { MdAlternateEmail } from "react-icons/md";
 import { MdOutlinePassword } from "react-icons/md";
 import { TbLockQuestion } from "react-icons/tb";
 import { BsFillPersonCheckFill } from "react-icons/bs";
-import { CiLogout } from "react-icons/ci";
-import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
-import { MdOutlineCheckBox, MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
+import {
+  MdOutlineCheckBox,
+  MdOutlineCheckBoxOutlineBlank,
+} from "react-icons/md";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-import Logo from "../assets/Logo.svg";
+import Modal from "../Components/Modal/Modal";
+import Header from "../Components/Modal/Header";
+import Link from "../Components/Button/Link";
+import Field from "../Components/Input/Field";
+import Password from "../Components/Input/Password";
 
 function Login() {
-  const [showPassword, setShowPassword] = useState(false);
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
 
   const toggleStayLoggedIn = () => {
     setStayLoggedIn(!stayLoggedIn);
@@ -87,100 +85,57 @@ function Login() {
   };
 
   return (
-    <div className="h-screen w-screen flex justify-center items-center">
-      <div className="h-fit py-10 w-[30%] z-50 backdrop-blur-3xl bg-[#00011] flex justify-center items-center rounded-4xl drop-shadow-lg">
-        <div className="h-fit w-[90%] rounded-4xl flex flex-col gap-8">
-          <div className="header flex justify-between items-center">
-            <div className="flex gap-3 items-center cursor-pointer text-white hover:text-gray-400 transition ease-in-out duration-300">
-              <CiLogout className="text-xl" />
-              <p className="text-">Go Back</p>
-            </div>
-            <img src={Logo} alt="Logo" className="w-36" />
-          </div>
-          <div className="flex justify-between items-center text-white text-xl">
-            <p>Welcome Back!</p>
-            <div className="flex gap-3 items-center cursor-pointer text-white hover:text-gray-400 transition ease-in-out duration-300">
-              <MdOutlinePersonAddAlt />
-              <p className="text-xl">Create an account</p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <h1 className="text-white text-5xl font-bold">Login</h1>
-            <p className="text-white text-xl">
-              Enter your credentials to login
-            </p>
-          </div>
-          <div className="flex flex-col gap-3 text-white text-xl">
-            <div className="flex gap-3 items-center">
-              <MdAlternateEmail />
-              <p>
-                Email Address <span className="text-red-500">*</span>
-              </p>
-            </div>
-            <input
-              type="email"
-              className="bg-white rounded-lg h-12 outline-0 text-black px-5"
-              placeholder="abc@xyz.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="flex flex-col gap-3 text-white text-xl">
-            <div className="flex gap-3 items-center">
-              <MdOutlinePassword />
-              <p>
-                Password <span className="text-red-500">*</span>
-              </p>
-            </div>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                className="bg-white rounded-lg h-12 outline-0 text-black px-5 w-full"
-                placeholder="********"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
-                onClick={togglePasswordVisibility}
-              >
-                {showPassword ? (
-                  <MdOutlineVisibilityOff className="text-black" />
-                ) : (
-                  <MdOutlineVisibility className="text-black" />
-                )}
-              </button>
-            </div>
-          </div>
-          <div className="flex justify-between items-center text-white text-xl">
-            <div className="flex gap-3 items-center cursor-pointer text-white hover:text-gray-400 transition ease-in-out duration-300">
-              <TbLockQuestion />
-              <p className="text-xl">Forgot Password?</p>
-            </div>
-            <div className="flex gap-3 items-center cursor-pointer" onClick={toggleStayLoggedIn}>
-              {stayLoggedIn ? (
-                <MdOutlineCheckBox className="text-white" />
-              ) : (
-                <MdOutlineCheckBoxOutlineBlank className="text-white" />
-              )}
-              <p className="text-xl">Stay Logged in?</p>
-            </div>
-          </div>
-          <div className="h-16 w-full flex my-5 justify-center">
-            <button
-              className="bg-white text-black flex group justify-between items-center px-5 rounded-lg h-12 w-60 cursor-pointer text-xl font-bold hover:bg-black hover:text-white border border-white hover:border-white transition ease-in-out duration-300"
-              onClick={handleLogin}
-            >
-              <BsFillPersonCheckFill className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out -translate-x-5 text-xl" />
-              Login
-              <IoChevronForward className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out translate-x-5" />
-            </button>
-          </div>
+    <>
+      <Modal>
+        <Header
+          text="Welcome Back!"
+          icon={<MdOutlinePersonAddAlt />}
+          link_text="Create an account"
+        />
+        <div className="flex flex-col gap-3">
+          <h1 className="text-white text-5xl font-bold">Login</h1>
+          <p className="text-white text-xl">Enter your credentials to login</p>
         </div>
-      </div>
+        <Field
+          state={email}
+          setState={setEmail}
+          text="Email"
+          required
+          icon={<MdAlternateEmail />}
+          placeholder="abc@xyz"
+        />
+        <Password
+          password={password}
+          setPassword={setPassword}
+          text="Password"
+        />
+        <div className="flex justify-between items-center text-white text-xl">
+          <Link text="Forgot Password?" icon={<TbLockQuestion />} />
+          <Link
+            text="Stay Logged In"
+            icon={
+              stayLoggedIn ? (
+                <MdOutlineCheckBox />
+              ) : (
+                <MdOutlineCheckBoxOutlineBlank />
+              )
+            }
+            onClick={toggleStayLoggedIn}
+          />
+        </div>
+        <div className="h-16 w-full flex my-5 justify-center">
+          <button
+            className="bg-white text-black flex group justify-between items-center px-5 rounded-lg h-12 w-60 cursor-pointer text-xl font-bold hover:bg-black hover:text-white border border-white hover:border-white transition ease-in-out duration-300"
+            onClick={handleLogin}
+          >
+            <BsFillPersonCheckFill className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out -translate-x-5 text-xl" />
+            Login
+            <IoChevronForward className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out translate-x-5" />
+          </button>
+        </div>
+      </Modal>
       <ToastContainer />
-    </div>
+    </>
   );
 }
 
