@@ -30,7 +30,7 @@ function Login() {
 
   const handleLogin = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    // const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     if (!email) {
       toast.error("Email is required");
@@ -45,7 +45,7 @@ function Login() {
       return;
     }
     // if (!passwordRegex.test(password)) {
-    //   toast.error("Password must be at least 8 characters long and contain both letters and numbers");
+    //   toast.error("Password must be at least 8 characters long and contain letters, numbers, and special characters");
     //   return;
     // }
 
@@ -94,6 +94,7 @@ function Login() {
           link_text="Create an account"
           title="Login"
           subtitle="Enter your credentials to continue"
+          onclick={() => (window.location.href = "/signup")}
         />
         <Field
           state={email}
