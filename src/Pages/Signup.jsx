@@ -11,7 +11,7 @@ import Modal from "../Components/Modal/Modal";
 import Header from "../Components/Modal/Header";
 import Field from "../Components/Input/Field";
 import Password from "../Components/Input/Password";
-import Button from "../Components/Modal/Button";
+import Button from "../Components/Button/Button";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -20,7 +20,8 @@ function Signup() {
 
   const handleSignup = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     if (!email) {
       toast.error("Email is required");
@@ -35,7 +36,9 @@ function Signup() {
       return;
     }
     if (!passwordRegex.test(password)) {
-      toast.error("Password must be at least 8 characters long and contain letters, numbers, and special characters");
+      toast.error(
+        "Password must be at least 8 characters long and contain letters, numbers, and special characters"
+      );
       return;
     }
     if (password !== confirmPassword) {

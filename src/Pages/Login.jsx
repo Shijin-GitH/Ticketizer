@@ -17,7 +17,7 @@ import Header from "../Components/Modal/Header";
 import Link from "../Components/Button/Link";
 import Field from "../Components/Input/Field";
 import Password from "../Components/Input/Password";
-import Button from "../Components/Modal/Button";
+import Button from "../Components/Button/Button";
 
 function Login() {
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
