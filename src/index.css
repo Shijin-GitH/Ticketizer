@@ -6,7 +6,7 @@
 }
 
 @theme {
-    --font-primary: "CircularStd-Book", serif;
+    --font-primary: "CircularStd-Book", "popins", sans-serif;
 }
 
 .scrollbar-none::-webkit-scrollbar {

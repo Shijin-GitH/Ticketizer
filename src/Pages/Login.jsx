@@ -123,17 +123,19 @@ function Login() {
             onClick={toggleStayLoggedIn}
           />
         </div>
-        <Button
-          text="Login"
-          width={"50%"}
-          iconleft={
-            <BsFillPersonCheckFill className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out -translate-x-5 text-xl" />
-          }
-          iconright={
-            <IoChevronForward className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out translate-x-5" />
-          }
-          handleLogin={handleLogin}
-        />
+        <div className="h-16 w-full flex my-5 justify-center">
+          <Button
+            text="Login"
+            width={"50%"}
+            iconleft={
+              <BsFillPersonCheckFill className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out -translate-x-5 text-xl" />
+            }
+            iconright={
+              <IoChevronForward className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out translate-x-5" />
+            }
+            handleLogin={handleLogin}
+          />
+        </div>
       </Modal>
       <ToastContainer />
     </>

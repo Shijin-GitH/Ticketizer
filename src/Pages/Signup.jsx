@@ -141,17 +141,19 @@ function Signup() {
           setPassword={setConfirmPassword}
           text="Confirm Password"
         />
-        <Button
-          text="Sign up"
-          width={"50%"}
-          iconleft={
-            <MdOutlinePersonAddAlt className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out -translate-x-5 text-xl" />
-          }
-          iconright={
-            <IoChevronForward className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out translate-x-5" />
-          }
-          handleLogin={handleSignup}
-        />
+        <div className="h-16 w-full flex my-5 justify-center">
+          <Button
+            text="Sign up"
+            width={"50%"}
+            iconleft={
+              <MdOutlinePersonAddAlt className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out -translate-x-5 text-xl" />
+            }
+            iconright={
+              <IoChevronForward className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out translate-x-5" />
+            }
+            handleLogin={handleSignup}
+          />
+        </div>
       </Modal>
       <ToastContainer />
     </>
