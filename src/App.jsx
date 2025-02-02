@@ -12,7 +12,7 @@ function App() {
     <>
       <SplashCursor />
       <Router>
-        <div className="absolute select-none flex justify-center items-center inset-0 h-screen w-screen bg-black bg-[linear-gradient(to_right,#80808018_1px,transparent_1px),linear-gradient(to_bottom,#80808018_1px,transparent_1px)] bg-[size:70px_70px]">
+        <div className="absolute font-primary select-none flex justify-center items-center inset-0 h-screen w-screen bg-black bg-[linear-gradient(to_right,#80808018_1px,transparent_1px),linear-gradient(to_bottom,#80808018_1px,transparent_1px)] bg-[size:70px_70px]">
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />

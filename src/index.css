@@ -1,9 +1,13 @@
 @import "tailwindcss";
 
-/* @font-face {
+@font-face {
   font-family: "CircularStd-Book";
-  src: url("./assets/CircularStd-Book.woff") format("woff");
-} */
+  src: url("./assets/font/CircularStd-Book.woff") format("opentype");
+}
+
+@theme {
+    --font-primary: "CircularStd-Book", serif;
+}
 
 .scrollbar-none::-webkit-scrollbar {
     display: none;
