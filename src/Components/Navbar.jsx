@@ -22,7 +22,7 @@ function Navbar() {
     },
   ];
   return (
-    <nav className="w-screen fixed h-20 mt-3 justify-around drop-shadow-xl text-white flex items-center">
+    <nav className="w-screen bg-black fixed h-26 px-3 justify-around drop-shadow-xl text-white flex items-center">
       <img src={Logo} alt="Ticketizer Logo" className="w-40" />
       <div className="flex w-fit gap-16">
         {navlinks.map((link, index) => (
