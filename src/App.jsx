@@ -6,6 +6,7 @@ import axios from "axios";
 import Signup from "./Pages/Signup";
 import Landing from "./Pages/Landing";
 import ExploreEvents from "./Pages/ExploreEvents";
+import EventForm from "./Pages/EventForm";
 
 function App() {
   axios.defaults.baseURL = "http://127.0.0.1:5000";
@@ -20,6 +21,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/events" element={<ExploreEvents />} />
+            <Route path="/create-event" element={<EventForm />} />
           </Routes>
         </div>
       </Router>

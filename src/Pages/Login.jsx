@@ -57,6 +57,9 @@ function Login() {
       .then((res) => {
         localStorage.setItem("token", res.data.token);
         toast.success("Login Successful");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 500);
       })
       .catch((err) => {
         if (err.response) {
