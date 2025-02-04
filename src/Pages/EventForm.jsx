@@ -110,6 +110,10 @@ export default function EventForm() {
     startTime: "",
     endDate: null,
     endTime: "",
+    registrationStartDate: null,
+    registrationStartTime: "",
+    registrationEndDate: null,
+    registrationEndTime: "",
     description: "",
     organizerName: "",
     organizerEmail: "",
@@ -129,9 +133,9 @@ export default function EventForm() {
   return (
     <div className="h-screen w-screen z-50">
       <Navbar />
-      <div className="flex flex-col gap-5 z-50 h-screen w-screen overflow-hidden items-center font-semibold text-black p-40">
+      <div className="flex flex-col gap-5 z-50 h-fit w-full overflow-auto scrollbar-none items-center font-semibold text-black mt-30 py-10">
         <h1 className="text-5xl font-bold text-white">Create Event</h1>
-        <div className="flex flex-col gap-5 w-[70vw] items-center justify-center h-full rounded-[32px]">
+        <div className="flex flex-col gap-5 w-[70vw] items-center h-fit rounded-[32px]">
           <div className="flex w-full justify-center flex-wrap gap-6 whitespace-nowrap">
             <InputField
               label="Name"
@@ -161,12 +165,32 @@ export default function EventForm() {
               onTimeChange={(time) => handleChange("endTime", time)}
             />
           </div>
+          <div className="flex w-full flex-col flex-wrap gap-6 items-center whitespace-nowrap ">
+            <DateTimeField
+              label="Registration Start"
+              date={formData.registrationStartDate}
+              time={formData.registrationStartTime}
+              onDateChange={(date) =>
+                handleChange("registrationStartDate", date)
+              }
+              onTimeChange={(time) =>
+                handleChange("registrationStartTime", time)
+              }
+            />
+            <DateTimeField
+              label="Registration End"
+              date={formData.registrationEndDate}
+              time={formData.registrationEndTime}
+              onDateChange={(date) => handleChange("registrationEndDate", date)}
+              onTimeChange={(time) => handleChange("registrationEndTime", time)}
+            />
+          </div>
 
           <textarea
             placeholder="Event description"
             value={formData.description}
             onChange={(e) => handleChange("description", e.target.value)}
-            className="border-white bg-black rounded-[32px] w-full h-40 p-5 border-solid border-[3px] text-white focus:outline-none "
+            className="border-white  bg-black rounded-[32px] w-full h-[40%] p-5 border-solid border-[3px] text-white focus:outline-none "
           />
 
           <div className="w-full flex gap-5">
