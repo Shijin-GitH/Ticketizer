@@ -4,6 +4,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-clock/dist/Clock.css";
 import Navbar from "../Components/Navbar";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export function InputField({ label, className = "", ...props }) {
   return (
@@ -75,9 +77,10 @@ export function DateTimeField({
           </label>
           <DatePicker
             selected={date}
-            onChange={onDateChange}
+            onChange={(date) =>
+              onDateChange(date ? date.toISOString().split("T")[0] : "")
+            }
             className="grow bg-transparent text-white px-4 py-2 focus:outline-none"
-            dateFormat="MM/dd/yyyy"
             placeholderText="Select date"
           />
         </div>
@@ -106,20 +109,20 @@ export default function EventForm() {
     name: "",
     venue: "",
     method: "",
-    startDate: null,
-    startTime: "",
-    endDate: null,
-    endTime: "",
+    start_date: null,
+    start_time: "",
+    end_date: null,
+    end_time: "",
     registrationStartDate: null,
     registrationStartTime: "",
     registrationEndDate: null,
     registrationEndTime: "",
     description: "",
-    organizerName: "",
-    organizerEmail: "",
-    eventType: "",
-    privacyType: "",
-    bannerLink: "",
+    org_name: "",
+    org_mail: "",
+    type: "",
+    privacy_type: "",
+    banner: "",
   });
 
   const handleChange = (field, value) => {
@@ -130,12 +133,38 @@ export default function EventForm() {
     window.location.href = "/login";
   }
 
+  const handleSubmit = (data) => {
+    const formattedData = {
+      ...data,
+      start_time: `${data.start_time}:00`,
+      end_time: `${data.end_time}:00`,
+      registrationStartTime: `${data.registrationStartTime}:00`,
+      registrationEndTime: `${data.registrationEndTime}:00`,
+    };
+    console.log(formattedData);
+    axios
+      .post("/create_event", formattedData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => {
+        toast("Event created successfully");
+        setTimeout(() => {
+          window.location.href = "/events";
+        }, 500);
+      })
+      .catch((err) => {
+        toast("An error occurred");
+      });
+  };
+
   return (
     <div className="h-screen w-screen z-50">
       <Navbar />
       <div className="flex flex-col gap-5 z-50 h-fit w-full overflow-auto scrollbar-none items-center font-semibold text-black mt-30 py-10">
         <h1 className="text-5xl font-bold text-white">Create Event</h1>
-        <div className="flex flex-col gap-5 w-[70vw] items-center h-fit rounded-[32px]">
+        <div className="flex flex-col gap-5 w-[70vw] items-center h-fit  p-5 rounded-[32px]">
           <div className="flex w-full justify-center flex-wrap gap-6 whitespace-nowrap">
             <InputField
               label="Name"
@@ -152,17 +181,17 @@ export default function EventForm() {
           <div className="flex w-full flex-col flex-wrap gap-6 items-center whitespace-nowrap ">
             <DateTimeField
               label="Start"
-              date={formData.startDate}
-              time={formData.startTime}
-              onDateChange={(date) => handleChange("startDate", date)}
-              onTimeChange={(time) => handleChange("startTime", time)}
+              date={formData.start_date}
+              time={formData.start_time}
+              onDateChange={(date) => handleChange("start_date", date)}
+              onTimeChange={(time) => handleChange("start_time", time)}
             />
             <DateTimeField
               label="End"
-              date={formData.endDate}
-              time={formData.endTime}
-              onDateChange={(date) => handleChange("endDate", date)}
-              onTimeChange={(time) => handleChange("endTime", time)}
+              date={formData.end_date}
+              time={formData.end_time}
+              onDateChange={(date) => handleChange("end_date", date)}
+              onTimeChange={(time) => handleChange("end_time", time)}
             />
           </div>
           <div className="flex w-full flex-col flex-wrap gap-6 items-center whitespace-nowrap ">
@@ -197,15 +226,15 @@ export default function EventForm() {
             <InputField
               label="Organizer's Name"
               className=""
-              value={formData.organizerName}
-              onChange={(e) => handleChange("organizerName", e.target.value)}
+              value={formData.org_name}
+              onChange={(e) => handleChange("org_name", e.target.value)}
             />
             <InputField
               label="Organizer's Email"
               type="email"
               className=""
-              value={formData.organizerEmail}
-              onChange={(e) => handleChange("organizerEmail", e.target.value)}
+              value={formData.org_mail}
+              onChange={(e) => handleChange("org_mail", e.target.value)}
             />
           </div>
 
@@ -213,8 +242,8 @@ export default function EventForm() {
             <SelectField
               label="Type"
               options={EVENT_TYPES}
-              value={formData.eventType}
-              onChange={(e) => handleChange("eventType", e.target.value)}
+              value={formData.type}
+              onChange={(e) => handleChange("type", e.target.value)}
             />
             <SelectField
               label="Method"
@@ -226,8 +255,8 @@ export default function EventForm() {
             <SelectField
               label="Privacy type"
               options={PRIVACY_TYPES}
-              value={formData.privacyType}
-              onChange={(e) => handleChange("privacyType", e.target.value)}
+              value={formData.privacy_type}
+              onChange={(e) => handleChange("privacy_type", e.target.value)}
             />
           </div>
           <div className="w-full">
@@ -235,13 +264,13 @@ export default function EventForm() {
               label="Banner Link"
               type="text"
               className=""
-              value={formData.bannerLink}
-              onChange={(e) => handleChange("bannerLink", e.target.value)}
+              value={formData.banner}
+              onChange={(e) => handleChange("banner", e.target.value)}
             />
           </div>
           <button
             className="flex flex-wrap grow gap-3.5 bg-black border-4 border-[#90FF00] border-solid rounded-[55px] text-[#90FF00] px-10 py-2.5 w-[10vw] text-center cursor-pointer items-center justify-center hover:bg-[#90FF00] hover:text-black transition ease-in-out duration-300"
-            onClick={() => console.log(formData)}
+            onClick={() => handleSubmit(formData)}
           >
             Create
           </button>
