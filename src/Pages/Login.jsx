@@ -112,7 +112,7 @@ function Login() {
           setPassword={setPassword}
           text="Password"
         />
-        <div className="flex justify-between items-center text-white text-xl">
+        <div className="flex justify-between items-center text-white">
           <Link text="Forgot Password?" icon={<TbLockQuestion />} />
           <Link
             text="Stay Logged In"
@@ -131,7 +131,7 @@ function Login() {
             text="Login"
             width={"50%"}
             iconleft={
-              <BsFillPersonCheckFill className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out -translate-x-5 text-xl" />
+              <BsFillPersonCheckFill className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out -translate-x-5 " />
             }
             iconright={
               <IoChevronForward className="text-white opacity-0 group-hover:opacity-100 transform group-hover:translate-x-0 transition duration-300 ease-in-out translate-x-5" />

@@ -7,13 +7,18 @@ import Signup from "./Pages/Signup";
 import Landing from "./Pages/Landing";
 import ExploreEvents from "./Pages/ExploreEvents";
 import EventForm from "./Pages/EventForm";
+import MyEvents from "./Pages/MyEvents";
 
 function App() {
   axios.defaults.baseURL = "http://127.0.0.1:5000";
 
   return (
     <>
-      <SplashCursor />
+      <SplashCursor
+        BACK_COLOR={{ r: 0.1, g: 0.1, b: 0.1 }} // Dark background
+        SPLAT_INTERVAL={1500} // Splats every 1.5 seconds
+        SPLAT_FORCE={3000} // Gentle splats
+      />
       <Router>
         <div className="absolute overflow-x-hidden scrollbar-none font-primary select-none flex flex-col inset-0 h-screen w-screen bg-black bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:70px_70px]">
           <Routes>
@@ -22,6 +27,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/events" element={<ExploreEvents />} />
             <Route path="/create-event" element={<EventForm />} />
+            <Route path="/my-events" element={<MyEvents />} />
           </Routes>
         </div>
       </Router>

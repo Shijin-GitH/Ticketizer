@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
-import Banner from "../assets/banner.png";
 import axios from "axios";
 
-function EventCard({ regStartDate, regEndDate, banner }) {
+function EventCard({ regStartDate, regStartTime, regEndDate, regEndTime, banner }) {
   const [status, setStatus] = useState("Open");
 
   useEffect(() => {
     const currentDate = new Date();
-    if (currentDate < new Date(regStartDate)) {
+    const regStartDateTime = new Date(`${regStartDate}T${regStartTime}`);
+    const regEndDateTime = new Date(`${regEndDate}T${regEndTime}`);
+    
+    if (currentDate < regStartDateTime) {
       setStatus("Opening Soon");
-    } else if (currentDate > new Date(regEndDate)) {
+    } else if (currentDate > regEndDateTime) {
       setStatus("Closed");
+    } else {
+      setStatus("Open");
     }
-  }, [regStartDate, regEndDate]);
+  }, [regStartDate, regStartTime, regEndDate, regEndTime]);
 
   return (
     <div className="relative h-fit w-fit">
@@ -51,18 +55,25 @@ function ExploreEvents() {
 
   useEffect(() => {
     axios.get("/fetch_banners").then((res) => {
+      console.log(res.data);
       const sortedBanners = res.data.sort((a, b) => {
         const currentDate = new Date();
-        const aStatus = currentDate < new Date(a.registration_start_date)
+        const aStartDateTime = new Date(`${a.registration_start_date}T${a.registration_start_time}`);
+        const aEndDateTime = new Date(`${a.registration_end_date}T${a.registration_end_time}`);
+        const bStartDateTime = new Date(`${b.registration_start_date}T${b.registration_start_time}`);
+        const bEndDateTime = new Date(`${b.registration_end_date}T${b.registration_end_time}`);
+        
+        const aStatus = currentDate < aStartDateTime
           ? "Opening Soon"
-          : currentDate > new Date(a.registration_end_date)
+          : currentDate > aEndDateTime
           ? "Closed"
           : "Open";
-        const bStatus = currentDate < new Date(b.registration_start_date)
+        const bStatus = currentDate < bStartDateTime
           ? "Opening Soon"
-          : currentDate > new Date(b.registration_end_date)
+          : currentDate > bEndDateTime
           ? "Closed"
           : "Open";
+        
         if (aStatus === "Open" && bStatus !== "Open") return -1;
         if (aStatus !== "Open" && bStatus === "Open") return 1;
         return 0;
@@ -81,7 +92,9 @@ function ExploreEvents() {
             <EventCard
               key={index}
               regStartDate={banner.registration_start_date}
+              regStartTime={banner.registration_start_time}
               regEndDate={banner.registration_end_date}
+              regEndTime={banner.registration_end_time}
               banner={banner.banner}
             />
           ))}

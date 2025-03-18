@@ -2,7 +2,7 @@ import React from "react";
 
 function Field({ state, setState, text, required = false, icon, placeholder, type = "text" }) {
   return (
-    <div className="flex flex-col gap-3 text-white text-xl">
+    <div className="flex flex-col gap-3 text-white text-[1.1vw]">
       <div className="flex gap-3 items-center">
         {icon}
         <p>
@@ -11,7 +11,7 @@ function Field({ state, setState, text, required = false, icon, placeholder, typ
       </div>
       <input
         type={type}
-        className="bg-white rounded-lg h-12 outline-0 text-black px-5"
+        className="bg-white rounded-[1vh] h-[5vh] outline-0 text-black px-5"
         placeholder={placeholder}
         value={state}
         onChange={(e) => setState(e.target.value)}

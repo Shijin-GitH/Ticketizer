@@ -7,7 +7,7 @@ function Password({ password, setPassword, text="Password" }) {
     setShowPassword(!showPassword);
   };
   return (
-    <div className="flex flex-col gap-3 text-white text-xl">
+    <div className="flex flex-col gap-3 text-white text-[1.1vw]">
       <div className="flex gap-3 items-center">
         <MdOutlinePassword />
         <p>
@@ -17,7 +17,7 @@ function Password({ password, setPassword, text="Password" }) {
       <div className="relative">
         <input
           type={showPassword ? "text" : "password"}
-          className="bg-white rounded-lg h-12 outline-0 text-black px-5 w-full"
+          className="bg-white rounded-[1vh] h-[5vh] outline-0 text-black px-5 w-full"
           placeholder="********"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

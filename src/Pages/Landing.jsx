@@ -8,7 +8,7 @@ function Landing() {
     <div className='w-screen z-50 h-screen scrollbar-none'>
       <Navbar />
       <Home />
-      <About />
+      {/* <About /> */}
     </div>
   )
 }
