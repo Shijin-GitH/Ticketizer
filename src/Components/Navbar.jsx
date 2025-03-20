@@ -1,13 +1,18 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Logo from "../assets/Logo.svg";
 import { LuLogIn, LuLogOut } from "react-icons/lu";
 import { Link, useLocation } from "react-router-dom";
 import { BiBell, BiPlus, BiPlusCircle, BiUser } from "react-icons/bi";
+import { useDispatch, useSelector } from "react-redux";
+import { clearUser } from "../store/userslice";
 
 function Navbar() {
+  const containerRef = useRef(null);
   const token = localStorage.getItem("token");
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
   const location = useLocation();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
   const navlinks = [
     {
       text: "Home",
@@ -35,6 +40,19 @@ function Navbar() {
     }
   };
 
+  const handleClickOutside = (event) => {
+    if (containerRef.current && !containerRef.current.contains(event.target)) {
+      setVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  
   return (
     <nav className="w-screen bg-black fixed h-26 z-50 px-3 justify-around drop-shadow-xl text-white flex items-center">
       <img src={Logo} alt="Ticketizer Logo" className="w-40" />
@@ -64,20 +82,21 @@ function Navbar() {
             className="h-11 w-11 font-bold rounded-full cursor-pointer bg-[#90FF00] flex items-center justify-center text-black"
             onClick={() => setVisible(!visible)}
           >
-            SA
+            {user && user.name && user.name.split(' ').slice(0, 2).map((name) => name[0].toUpperCase())}
           </div>
         )}
         <div
+          ref={containerRef}
           className={`absolute w-full h-fit bg-black top-15 border-2 rounded-md border-[#fff] hover:border-[#90FF00] transition duration-300 ease-in-out flex flex-col items-center p-5 gap-5 ${
             visible ? "visible" : "invisible"
           }`}
         >
           <div className="h-12 w-12 rounded-full bg-[#90FF00] flex items-center justify-center font-bold text-black">
-            SA
+          {user && user.name && user.name.split(' ').slice(0, 2).map((name) => name[0].toUpperCase())}
           </div>
           <div className="flex flex-col items-center">
-            <p>Shijin Abraham</p>
-            <p>shijinabraham2003@gmail.com</p>
+            <p>{user && user.name}</p>
+            <p>{user && user.email}</p>
           </div>
           <div
             className="bg-[#90FF00] w-full gap-5 text-black flex group justify-center items-center px-5 rounded-lg h-10 cursor-pointer text-lg font-bold hover:bg-black hover:text-white border-2 border-transparent hover:border-[#90FF00] transition ease-in-out duration-300"
@@ -98,6 +117,7 @@ function Navbar() {
               className="flex w-full justify-start items-center gap-5 hover:text-[#90FF00] cursor-pointer transition duration-300 ease-in-out"
               onClick={() => {
                 localStorage.removeItem("token");
+                dispatch(clearUser());
                 window.location.href = "/";
               }}
             >

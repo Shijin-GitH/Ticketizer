@@ -18,11 +18,14 @@ import Link from "../Components/Button/Link";
 import Field from "../Components/Input/Field";
 import Password from "../Components/Input/Password";
 import Button from "../Components/Button/Button";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/userslice";
 
 function Login() {
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
 
   const toggleStayLoggedIn = () => {
     setStayLoggedIn(!stayLoggedIn);
@@ -56,6 +59,15 @@ function Login() {
       })
       .then((res) => {
         localStorage.setItem("token", res.data.token);
+        axios
+          .get("/user_details", {
+            headers: {
+              Authorization: `Bearer ${res.data.token}`,
+            },
+          })
+          .then((resp) => {
+            dispatch(setUser(resp.data));
+          });
         toast.success("Login Successful");
         setTimeout(() => {
           window.location.href = "/";
@@ -97,7 +109,8 @@ function Login() {
           link_text="Create an account"
           title="Login"
           subtitle="Enter your credentials to continue"
-          onclick={() => (window.location.href = "/signup")}k
+          onclick={() => (window.location.href = "/signup")}
+          k
         />
         <Field
           state={email}

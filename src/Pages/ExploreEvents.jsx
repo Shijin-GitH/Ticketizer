@@ -2,14 +2,20 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import axios from "axios";
 
-function EventCard({ regStartDate, regStartTime, regEndDate, regEndTime, banner }) {
+function EventCard({
+  regStartDate,
+  regStartTime,
+  regEndDate,
+  regEndTime,
+  banner,
+}) {
   const [status, setStatus] = useState("Open");
 
   useEffect(() => {
     const currentDate = new Date();
     const regStartDateTime = new Date(`${regStartDate}T${regStartTime}`);
     const regEndDateTime = new Date(`${regEndDate}T${regEndTime}`);
-    
+
     if (currentDate < regStartDateTime) {
       setStatus("Opening Soon");
     } else if (currentDate > regEndDateTime) {
@@ -23,7 +29,9 @@ function EventCard({ regStartDate, regStartTime, regEndDate, regEndTime, banner 
     <div className="relative h-fit w-fit">
       <img
         src={banner}
-        className={`w-[75vw] rounded-3xl ${status === "Closed" ? "grayscale" : ""}`}
+        className={`w-[75vw] rounded-3xl ${
+          status === "Closed" ? "grayscale" : ""
+        }`}
         alt="Event Banner"
       />
       <div className="flex absolute top-10 right-10 items-center gap-5">
@@ -58,22 +66,32 @@ function ExploreEvents() {
       console.log(res.data);
       const sortedBanners = res.data.sort((a, b) => {
         const currentDate = new Date();
-        const aStartDateTime = new Date(`${a.registration_start_date}T${a.registration_start_time}`);
-        const aEndDateTime = new Date(`${a.registration_end_date}T${a.registration_end_time}`);
-        const bStartDateTime = new Date(`${b.registration_start_date}T${b.registration_start_time}`);
-        const bEndDateTime = new Date(`${b.registration_end_date}T${b.registration_end_time}`);
-        
-        const aStatus = currentDate < aStartDateTime
-          ? "Opening Soon"
-          : currentDate > aEndDateTime
-          ? "Closed"
-          : "Open";
-        const bStatus = currentDate < bStartDateTime
-          ? "Opening Soon"
-          : currentDate > bEndDateTime
-          ? "Closed"
-          : "Open";
-        
+        const aStartDateTime = new Date(
+          `${a.registration_start_date}T${a.registration_start_time}`
+        );
+        const aEndDateTime = new Date(
+          `${a.registration_end_date}T${a.registration_end_time}`
+        );
+        const bStartDateTime = new Date(
+          `${b.registration_start_date}T${b.registration_start_time}`
+        );
+        const bEndDateTime = new Date(
+          `${b.registration_end_date}T${b.registration_end_time}`
+        );
+
+        const aStatus =
+          currentDate < aStartDateTime
+            ? "Opening Soon"
+            : currentDate > aEndDateTime
+            ? "Closed"
+            : "Open";
+        const bStatus =
+          currentDate < bStartDateTime
+            ? "Opening Soon"
+            : currentDate > bEndDateTime
+            ? "Closed"
+            : "Open";
+
         if (aStatus === "Open" && bStatus !== "Open") return -1;
         if (aStatus !== "Open" && bStatus === "Open") return 1;
         return 0;
