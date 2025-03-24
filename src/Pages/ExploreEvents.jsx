@@ -26,17 +26,17 @@ function EventCard({
   }, [regStartDate, regStartTime, regEndDate, regEndTime]);
 
   return (
-    <div className="relative h-fit w-fit">
+    <div className="relative group h-fit hover:scale-[101%] overflow-hidden transition duration-300 ease-in-out w-fit">
       <img
         src={banner}
-        className={`w-[75vw] rounded-3xl ${
+        className={`w-[40vw] rounded-3xl border-2 cursor-pointer hover:border-[#90FF00] transition ease-in-out duration-300 border-white ${
           status === "Closed" ? "grayscale" : ""
         }`}
         alt="Event Banner"
       />
-      <div className="flex absolute top-10 right-10 items-center gap-5">
+      <div className="flex absolute top-0 group-hover:translate-x-[105%] group-hover:border-t-0 group-hover:opacity-0 right-0 p-4 transition duration-300 ease-in-out bg-black border border-[#90FF00] rounded-tr-3xl rounded-bl-3xl items-center gap-5">
         <div
-          className={`h-8 w-8 rounded-full ${
+          className={`h-5 w-5 rounded-full ${
             status === "Closed"
               ? "bg-red-500"
               : status === "Opening Soon"
@@ -44,9 +44,9 @@ function EventCard({
               : "bg-[#90FF00]"
           } flex justify-center items-center`}
         >
-          <div className="border-2 border-black h-7 w-7 rounded-full"></div>
+          <div className="border-2 border-black h-4 w-4 rounded-full"></div>
         </div>
-        <p className="text-white font-bold text-xl">
+        <p className="text-white font-bold text-md">
           {status === "Closed"
             ? "Registrations Closed"
             : status === "Opening Soon"
@@ -103,9 +103,9 @@ function ExploreEvents() {
   return (
     <div className="w-screen h-screen flex flex-col items-center z-50">
       <Navbar />
-      <div className="mt-40 flex flex-col items-center">
+      <div className="mt-40 flex flex-col items-center gap-5">
         <h1 className="text-white text-9xl font-bold">Events</h1>
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-wrap justify-center gap-10">
           {banners.map((banner, index) => (
             <EventCard
               key={index}
