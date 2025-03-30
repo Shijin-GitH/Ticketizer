@@ -107,15 +107,15 @@ function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
   }
 
   return (
-    <div className="fixed top-0 right-0 w-1/3 h-full bg-white shadow-lg border-l border-gray-200 flex flex-col p-6 z-50 text-black">
-      <div className="flex justify-between items-center mb-6">
+    <div className="fixed top-24 right-0 w-1/3 h-full bg-black shadow-lg border-l border-[#90FF00] flex flex-col p-6 z-50 text-black">
+      <div className="flex justify-between items-center mb-6 text-white">
         <h2 className="text-xl font-semibold">{isEditing ? "Edit Field" : "Form Builder"}</h2>
-        <button className="text-gray-600 hover:text-gray-800" onClick={closeSidebar}>
+        <button className="text-white cursor-pointer hover:text-gray-800" onClick={closeSidebar}>
           ✕
         </button>
       </div>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 text-white">
         <div>
           <label className="block text-sm font-medium mb-1">
             Field Name <span className="text-red-500">*</span>
@@ -190,13 +190,13 @@ function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
 
         <div className="mt-auto flex justify-end gap-3">
           <button
-            className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-100"
+            className="px-4 py-2 border cursor-pointer border-gray-300 rounded text-gray-700 hover:bg-gray-100"
             onClick={closeSidebar}
           >
             Cancel
           </button>
           <button
-            className="px-4 py-2 bg-[#90FF00] text-black rounded hover:bg-black hover:text-white hover:border-[#90FF00] border border-transparent transition duration-300"
+            className="px-4 py-2 bg-[#90FF00] cursor-pointer text-black rounded hover:bg-black hover:text-white hover:border-[#90FF00] border border-transparent transition duration-300"
             onClick={handleSave}
           >
             {isEditing ? "Update Field" : "Create Field"}

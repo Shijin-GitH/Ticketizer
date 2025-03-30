@@ -12,7 +12,7 @@ export function InputField({ label, className = "", ...props }) {
     <div
       className={`flex flex-wrap grow gap-3.5 pr-9 bg-black border-4 border-white border-solid rounded-[55px] ${className}`}
     >
-      <label className="px-10 py-2.5 bg-white text-black rounded-[55px_0px_55px_55px] w-fit max-md:px-5">
+      <label className="px-10 py-2.5 bg-gray-900 text-white rounded-[55px_0px_55px_55px] w-fit max-md:px-5">
         {label}
       </label>
       <input
@@ -30,12 +30,12 @@ export function SelectField({ label, options, className = "", ...props }) {
     <div
       className={`flex flex-wrap gap-2 grow pr-9 bg-black border-4 border-white border-solid rounded-[55px] ${className}`}
     >
-      <label className="px-10 py-2.5 bg-white text-black font-semibold rounded-[55px_0px_55px_55px] w-fit max-md:px-5">
+      <label className="px-10 py-2.5 bg-gray-900 text-white font-semibold rounded-[55px_0px_55px_55px] w-fit max-md:px-5">
         {label}
       </label>
       <select
         {...props}
-        className="grow bg-black text-white px-4 py-2 focus:outline-none appearance-none"
+        className="grow bg-black text-gray-500 px-4 py-2 focus:outline-none appearance-none"
         aria-label={label}
       >
         <option value="">Select {label}</option>
@@ -72,7 +72,7 @@ export function DateTimeField({
     <div className="flex gap-3 w-full grow">
       <div className="flex w-1/2 gap-5 grow shrink rounded-none ">
         <div className="flex gap-2 grow bg-black border-4 border-white border-solid rounded-[55px]">
-          <label className="bg-white font-semibold px-10 text-nowrap text-black py-2.5 rounded-[55px_0px_55px_55px]">
+          <label className="bg-gray-900 font-semibold px-10 text-nowrap text-white py-2.5 rounded-[55px_0px_55px_55px]">
             {label} Date
           </label>
           <DatePicker
@@ -99,11 +99,13 @@ export function DateTimeField({
 }
 
 export default function EventForm() {
-  const EVENT_TYPES = ["Conference", "Meeting", "Workshop", "Seminar", "Other"];
+  const EVENT_TYPES = ["Registration", "Ticketing"];
 
   const PRIVACY_TYPES = ["Public", "Private", "Invite Only"];
 
   const METHOD_TYPES = ["In Person", "Virtual", "Hybrid"];
+
+  const MODE = ["Team", "Individual"];
 
   const [formData, setFormData] = useState({
     name: "",
@@ -123,6 +125,12 @@ export default function EventForm() {
     type: "",
     privacy_type: "",
     banner: "",
+    mode: "",
+    ticketing: false,
+    forms: false,
+    team_min:  "",
+    team_max:  "",
+
   });
 
   const handleChange = (field, value) => {
@@ -162,9 +170,9 @@ export default function EventForm() {
   return (
     <div className="h-screen w-screen z-50">
       <Navbar />
-      <div className="flex flex-col gap-5 z-50 h-fit w-full overflow-auto scrollbar-none items-center font-semibold text-black mt-30 py-10">
+      <div className="flex flex-col gap-10 z-50 h-fit w-full overflow-auto scrollbar-none items-center font-semibold text-black mt-30 py-10">
         <h1 className="text-5xl font-bold text-white">Create Event</h1>
-        <div className="flex backdrop-blur-3xl p-10 flex-col gap-5 w-[70vw] items-center h-fit rounded-[32px]">
+        <div className="flex backdrop-blur-3xl p-10 flex-col gap-10 w-[70vw] items-center h-fit rounded-[32px]">
           <div className="flex w-full justify-center flex-wrap gap-6 whitespace-nowrap">
             <InputField
               label="Event Name"
@@ -178,7 +186,7 @@ export default function EventForm() {
             />
           </div>
 
-          <div className="flex w-full flex-col flex-wrap gap-6 items-center whitespace-nowrap ">
+          <div className="flex w-full flex-col flex-wrap gap-10 items-center whitespace-nowrap ">
             <DateTimeField
               label="Start"
               date={formData.start_date}
@@ -225,13 +233,37 @@ export default function EventForm() {
               onChange={(e) => handleChange("method", e.target.value)}
               className=""
             />
-            <SelectField
-              label="Privacy type"
-              options={PRIVACY_TYPES}
-              value={formData.privacy_type}
-              onChange={(e) => handleChange("privacy_type", e.target.value)}
-            />
           </div>
+            <div className="flex flex-wrap gap-5 w-full">
+              <SelectField
+                label="Privacy type"
+                options={PRIVACY_TYPES}
+                value={formData.privacy_type}
+                onChange={(e) => handleChange("privacy_type", e.target.value)}
+            />
+              <SelectField
+                label="Mode"
+                options={MODE}
+                value={formData.mode}
+                onChange={(e) => handleChange("mode", e.target.value)}
+              />
+          </div>
+          {formData.mode === "Team" && (
+            <div className="flex flex-wrap gap-5 w-full">
+              <InputField
+                label="Team Min"
+                type="number"
+                value={formData.team_min}
+                onChange={(e) => handleChange("team_min", e.target.value)}
+              />
+              <InputField
+                label="Team Max"
+                type="number"
+                value={formData.team_max}
+                onChange={(e) => handleChange("team_max", e.target.value)}
+              />
+            </div>
+          )}
           <button
             className="flex flex-wrap grow gap-3.5 bg-black border-4 border-[#90FF00] border-solid rounded-[55px] text-[#90FF00] px-10 py-2.5 w-[10vw] text-center cursor-pointer items-center justify-center hover:bg-[#90FF00] hover:text-black transition ease-in-out duration-300"
             onClick={() => handleSubmit(formData)}

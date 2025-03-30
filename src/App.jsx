@@ -14,6 +14,10 @@ import Ticketing from "./Sections/ManageEvents/Ticketing";
 import FormsSection from "./Sections/ManageEvents/FormSection";
 import Attendees from "./Sections/ManageEvents/Attendees";
 import AddAdmin from "./Sections/ManageEvents/AddAdmin";
+import EventLanding from "./Pages/Event/EventLanding";
+import Registration from "./Pages/Event/Registration";
+import Payment from "./Pages/Event/Payment";
+import PaymentSuccess from "./Pages/Event/PaymentSuccess";
 
 function App() {
   axios.defaults.baseURL = "http://127.0.0.1:5000";
@@ -41,6 +45,10 @@ function App() {
               <Route path="attendees" element={<Attendees />} />
               <Route path="add-admin" element={<AddAdmin />} />
             </Route>
+            <Route path="/event" element={<EventLanding />} />
+            <Route path="/register" element={<Registration />} /> 
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
           </Routes>
         </div>
       </Router>

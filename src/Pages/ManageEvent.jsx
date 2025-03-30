@@ -3,12 +3,7 @@ import {
   FaInfoCircle,
   FaTicketAlt,
   FaWpforms,
-  FaUsers,
-  FaMoneyCheckAlt,
-  FaClipboardCheck,
-  FaBullhorn,
-  FaTools,
-  FaListUl,
+  FaUsers
 } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 import { Outlet, useLocation } from "react-router-dom";
@@ -41,7 +36,7 @@ function Sidebar() {
   return (
     <div className="h-screen w-64 fixed bg-[#000] border-r border-[#90FF00] text-white flex flex-col">
       <div className="flex justify-center p-5">
-        <img src={Logo} className="w-[90%] py-5" alt="Logo" />
+        <img src={Logo} className="w-[90%] py-5 cursor-pointer" alt="Logo" onClick={() => {window.location.href = "/"}}/>
       </div>
       <div className="flex flex-col gap-2 p-3">
         {sidebarLinks.map((link, index) => (

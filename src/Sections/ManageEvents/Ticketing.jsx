@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaPlus, FaEdit, FaTrash, FaTimes } from "react-icons/fa";
 import Dropdown from "../../Components/Dropdown";
 import { FaTicketAlt } from "react-icons/fa";
+import { Switch } from "../../Components/Switch";
 
 const tickets = [
   {
@@ -60,12 +61,12 @@ function AddTicketSidebar({ closeSidebar }) {
   const [quantity, setQuantity] = useState("");
 
   return (
-    <div className="fixed top-0 right-0 w-1/3 h-full bg-white shadow-lg border-l border-gray-200 flex flex-col p-6 z-50">
+    <div className="fixed top-24 right-0 w-1/3 h-full py-10 bg-black shadow-lg border-l border-[#90FF00] flex flex-col p-6 z-50">
       {/* Sidebar Header */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Add Ticket</h2>
+        <h2 className="text-xl font-semibold text-white">Add Ticket</h2>
         <button
-          className="text-gray-600 hover:text-gray-800"
+          className="text-white cursor-pointer hover:text-gray-800"
           onClick={closeSidebar}
         >
           <FaTimes size={20} />
@@ -73,9 +74,9 @@ function AddTicketSidebar({ closeSidebar }) {
       </div>
 
       {/* Ticket Form */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 text-white">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-white">
             Ticket Name
           </label>
           <input
@@ -87,7 +88,7 @@ function AddTicketSidebar({ closeSidebar }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-white">
             Price
           </label>
           <input
@@ -99,7 +100,7 @@ function AddTicketSidebar({ closeSidebar }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-white">
             Quantity
           </label>
           <input
@@ -110,7 +111,7 @@ function AddTicketSidebar({ closeSidebar }) {
           />
         </div>
 
-        <button className="bg-[#90FF00] hover:bg-green-600 text-white px-4 py-2 rounded mt-4">
+        <button className="bg-[#90FF00] border boder-transparent transition duration-300 ease-in-out hover:text-white cursor-pointer hover:bg-black hover:border-[#90FF00] text-black px-4 py-2 rounded mt-4">
           Save Ticket
         </button>
       </div>
