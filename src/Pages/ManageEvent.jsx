@@ -14,11 +14,6 @@ import { IoSettingsSharp } from "react-icons/io5";
 import { Outlet, useLocation } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
 import UserDropdown from "../Components/UserMenu";
-import Dropdown from "../Components/Dropdown";
-import BasicDetails from "../Sections/ManageEvents/BasicDetails";
-import Ticketing from "../Sections/ManageEvents/Ticketing";
-import FormsSection from "../Sections/ManageEvents/FormSection";
-import Attendees from "../Sections/ManageEvents/Attendees";
 
 function Sidebar() {
   const location = useLocation();
@@ -100,23 +95,6 @@ function Topbar() {
 }
 
 function ManageEvent() {
-  const location = useLocation();
-
-  const renderContent = () => {
-    if (location.pathname === "/manage-event/event-details") {
-      return <BasicDetails />;
-    } else if (location.pathname === "/manage-event/ticketing") {
-      return <Ticketing />;
-    }
-    else if (location.pathname === "/manage-event/forms") {
-      return <FormsSection />;
-    }
-    else if (location.pathname === "/manage-event/attendees") {
-      return <Attendees />;
-    }
-    return null;
-  };
-
   return (
     <div className="h-screen flex w-screen overflow-x-hidden z-50">
       <Sidebar />
