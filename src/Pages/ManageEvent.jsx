@@ -32,13 +32,8 @@ function Sidebar() {
     { text: "Forms", link: "/manage-event/forms", icon: <FaWpforms /> },
     { text: "Attendees", link: "/manage-event/attendees", icon: <FaUsers /> },
     {
-      text: "Transactions",
-      link: "/manage-event/transactions",
-      icon: <FaMoneyCheckAlt />,
-    },
-    {
-      text: "Advanced",
-      link: "/manage-event/advanced",
+      text: "Add Admin",
+      link: "/manage-event/add-admin",
       icon: <IoSettingsSharp />,
     },
   ];
