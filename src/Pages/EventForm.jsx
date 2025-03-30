@@ -12,7 +12,7 @@ export function InputField({ label, className = "", ...props }) {
     <div
       className={`flex flex-wrap grow gap-3.5 pr-9 bg-black border-4 border-white border-solid rounded-[55px] ${className}`}
     >
-      <label className="px-10 py-2.5 bg-white rounded-[55px_0px_55px_55px] w-fit max-md:px-5">
+      <label className="px-10 py-2.5 bg-white text-black rounded-[55px_0px_55px_55px] w-fit max-md:px-5">
         {label}
       </label>
       <input
@@ -30,7 +30,7 @@ export function SelectField({ label, options, className = "", ...props }) {
     <div
       className={`flex flex-wrap gap-2 grow pr-9 bg-black border-4 border-white border-solid rounded-[55px] ${className}`}
     >
-      <label className="px-10 py-2.5 bg-white rounded-[55px_0px_55px_55px] w-fit max-md:px-5">
+      <label className="px-10 py-2.5 bg-white text-black font-semibold rounded-[55px_0px_55px_55px] w-fit max-md:px-5">
         {label}
       </label>
       <select
@@ -69,10 +69,10 @@ export function DateTimeField({
   };
 
   return (
-    <div className="flex gap-4 w-full grow">
-      <div className="flex gap-5 grow shrink rounded-none ">
+    <div className="flex gap-3 w-full grow">
+      <div className="flex w-1/2 gap-5 grow shrink rounded-none ">
         <div className="flex gap-2 grow bg-black border-4 border-white border-solid rounded-[55px]">
-          <label className="bg-white px-10 py-2.5 rounded-[55px_0px_55px_55px]">
+          <label className="bg-white font-semibold px-10 text-nowrap text-black py-2.5 rounded-[55px_0px_55px_55px]">
             {label} Date
           </label>
           <DatePicker
@@ -80,12 +80,12 @@ export function DateTimeField({
             onChange={(date) =>
               onDateChange(date ? date.toISOString().split("T")[0] : "")
             }
-            className="grow bg-transparent text-white px-4 py-2 focus:outline-none"
+            className="grow bg-transparent px-4 py-2 text-white focus:outline-none"
             placeholderText="Select date"
           />
         </div>
       </div>
-      <div className="flex flex-col grow shrink self-stretch my-auto rounded-none">
+      <div className="flex w-1/2 flex-col text-black font-semibold grow shrink self-stretch my-auto rounded-none">
         <SelectField
           label={`${label} Time`}
           options={generateTimeOptions()}
@@ -164,10 +164,10 @@ export default function EventForm() {
       <Navbar />
       <div className="flex flex-col gap-5 z-50 h-fit w-full overflow-auto scrollbar-none items-center font-semibold text-black mt-30 py-10">
         <h1 className="text-5xl font-bold text-white">Create Event</h1>
-        <div className="flex flex-col gap-5 w-[70vw] items-center h-fit  p-5 rounded-[32px]">
+        <div className="flex backdrop-blur-3xl p-10 flex-col gap-5 w-[70vw] items-center h-fit rounded-[32px]">
           <div className="flex w-full justify-center flex-wrap gap-6 whitespace-nowrap">
             <InputField
-              label="Name"
+              label="Event Name"
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
             />
@@ -194,33 +194,6 @@ export default function EventForm() {
               onTimeChange={(time) => handleChange("end_time", time)}
             />
           </div>
-          <div className="flex w-full flex-col flex-wrap gap-6 items-center whitespace-nowrap ">
-            <DateTimeField
-              label="Registration Start"
-              date={formData.registrationStartDate}
-              time={formData.registrationStartTime}
-              onDateChange={(date) =>
-                handleChange("registrationStartDate", date)
-              }
-              onTimeChange={(time) =>
-                handleChange("registrationStartTime", time)
-              }
-            />
-            <DateTimeField
-              label="Registration End"
-              date={formData.registrationEndDate}
-              time={formData.registrationEndTime}
-              onDateChange={(date) => handleChange("registrationEndDate", date)}
-              onTimeChange={(time) => handleChange("registrationEndTime", time)}
-            />
-          </div>
-
-          <textarea
-            placeholder="Event description"
-            value={formData.description}
-            onChange={(e) => handleChange("description", e.target.value)}
-            className="border-white  bg-black rounded-[32px] w-full h-[40%] p-5 border-solid border-[3px] text-white focus:outline-none "
-          />
 
           <div className="w-full flex gap-5">
             <InputField
@@ -257,15 +230,6 @@ export default function EventForm() {
               options={PRIVACY_TYPES}
               value={formData.privacy_type}
               onChange={(e) => handleChange("privacy_type", e.target.value)}
-            />
-          </div>
-          <div className="w-full">
-            <InputField
-              label="Banner Link"
-              type="text"
-              className=""
-              value={formData.banner}
-              onChange={(e) => handleChange("banner", e.target.value)}
             />
           </div>
           <button

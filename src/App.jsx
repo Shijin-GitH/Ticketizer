@@ -8,6 +8,11 @@ import Landing from "./Pages/Landing";
 import ExploreEvents from "./Pages/ExploreEvents";
 import EventForm from "./Pages/EventForm";
 import MyEvents from "./Pages/MyEvents";
+import ManageEvent from "./Pages/ManageEvent";
+import BasicDetails from "./Sections/ManageEvents/BasicDetails";
+import Ticketing from "./Sections/ManageEvents/Ticketing";
+import FormsSection from "./Sections/ManageEvents/FormSection";
+import Attendees from "./Sections/ManageEvents/Attendees";
 
 function App() {
   axios.defaults.baseURL = "http://127.0.0.1:5000";
@@ -28,6 +33,12 @@ function App() {
             <Route path="/events" element={<ExploreEvents />} />
             <Route path="/create-event" element={<EventForm />} />
             <Route path="/my-events" element={<MyEvents />} />
+            <Route path="/manage-event/*" element={<ManageEvent />} >
+              <Route path="event-details" element={<BasicDetails />} />
+              <Route path="ticketing" element={<Ticketing />} />
+              <Route path="forms" element={<FormsSection />} />
+              <Route path="attendees" element={<Attendees />} />
+            </Route>
           </Routes>
         </div>
       </Router>
