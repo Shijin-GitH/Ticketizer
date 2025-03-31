@@ -6,7 +6,12 @@ import { TbCalendarTime, TbLocation } from "react-icons/tb";
 
 function EventCard({ event }) {
   return (
-    <div className="h-80 w-100 bg-[#040404] z-50 flex flex-col gap-2 border-4 rounded-md border-white hover:scale-[101%] cursor-pointer hover:border-[#90FF00] transition ease-in-out duration-300">
+    <div
+      className="h-80 w-100 bg-[#040404] z-50 flex flex-col gap-2 border-4 rounded-md border-white hover:scale-[101%] cursor-pointer hover:border-[#90FF00] transition ease-in-out duration-300"
+      onClick={() =>
+        (window.location.href = `/manage-event/${event.token}/basic-details`)
+      }
+    >
       <img src={event.banner} className="rounded-t-md h-[60%]" alt="" />
       <div className="grow flex flex-col gap-4 px-3 text-white">
         <h1 className="text-xl">{event.name}</h1>

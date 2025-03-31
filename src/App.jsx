@@ -23,7 +23,8 @@ import ContactsSection from "./Sections/ManageEvents/ContactsSection";
 import TermsAndConditionsSection from "./Sections/ManageEvents/TermsAndConditionsSection";
 
 function App() {
-  axios.defaults.baseURL = "http://127.0.0.1:5000";
+  // axios.defaults.baseURL = "http://127.0.0.1:5000";
+  axios.defaults.baseURL = "https://7b42h9f8-5000.inc1.devtunnels.ms/";
 
   return (
     <>
@@ -41,8 +42,8 @@ function App() {
             <Route path="/events" element={<ExploreEvents />} />
             <Route path="/create-event" element={<EventForm />} />
             <Route path="/my-events" element={<MyEvents />} />
-            <Route path="/manage-event/*" element={<ManageEvent />}>
-              <Route path="event-details" element={<BasicDetails />} />
+            <Route path="/manage-event/:eventToken/*" element={<ManageEvent />}>
+              <Route path="basic-details" element={<BasicDetails />} />
               <Route path="ticketing" element={<Ticketing />} />
               <Route path="forms" element={<FormsSection />} />
               <Route path="attendees" element={<Attendees />} />

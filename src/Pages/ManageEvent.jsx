@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
+import axios from "axios";
 import {
   FaInfoCircle,
   FaTicketAlt,
   FaWpforms,
   FaUsers,
-  FaMoneyBill
+  FaMoneyBill,
 } from "react-icons/fa";
 import { IoCash, IoSettingsSharp } from "react-icons/io5";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useParams } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
 import UserDropdown from "../Components/UserMenu";
 import { TbCashBanknote } from "react-icons/tb";
@@ -15,46 +16,62 @@ import { BiBriefcase, BiPhoneCall } from "react-icons/bi";
 
 function Sidebar() {
   const location = useLocation();
+  const { eventToken } = useParams(); // Access the dynamic eventToken parameter
 
   const sidebarLinks = [
     {
       text: "Event Details",
-      link: "/manage-event/event-details",
+      link: `/manage-event/${eventToken}/basic-details`,
       icon: <FaInfoCircle />,
     },
     {
       text: "Ticketing",
-      link: "/manage-event/ticketing",
+      link: `/manage-event/${eventToken}/ticketing`,
       icon: <FaTicketAlt />,
     },
-    { text: "Forms", link: "/manage-event/forms", icon: <FaWpforms /> },
-    { text: "Attendees", link: "/manage-event/attendees", icon: <FaUsers /> },
+    {
+      text: "Forms",
+      link: `/manage-event/${eventToken}/forms`,
+      icon: <FaWpforms />,
+    },
+    {
+      text: "Attendees",
+      link: `/manage-event/${eventToken}/attendees`,
+      icon: <FaUsers />,
+    },
     {
       text: "Add Admin",
-      link: "/manage-event/add-admin",
+      link: `/manage-event/${eventToken}/add-admin`,
       icon: <IoSettingsSharp />,
     },
     {
       text: "Bank Details",
-      link: "/manage-event/bank-details",
+      link: `/manage-event/${eventToken}/bank-details`,
       icon: <FaMoneyBill />,
     },
     {
       text: "Contacts",
-      link: "/manage-event/contacts",
+      link: `/manage-event/${eventToken}/contacts`,
       icon: <BiPhoneCall />,
     },
     {
       text: "Terms & Conditions",
-      link: "/manage-event/terms-and-conditions",
+      link: `/manage-event/${eventToken}/terms-and-conditions`,
       icon: <BiBriefcase />,
-    }
+    },
   ];
 
   return (
     <div className="h-screen w-64 fixed bg-[#000] border-r border-[#90FF00] text-white flex flex-col">
       <div className="flex justify-center p-5">
-        <img src={Logo} className="w-[90%] py-5 cursor-pointer" alt="Logo" onClick={() => {window.location.href = "/"}}/>
+        <img
+          src={Logo}
+          className="w-[90%] py-5 cursor-pointer"
+          alt="Logo"
+          onClick={() => {
+            window.location.href = "/";
+          }}
+        />
       </div>
       <div className="flex flex-col gap-2 p-3">
         {sidebarLinks.map((link, index) => (
@@ -103,6 +120,21 @@ function Topbar() {
 }
 
 function ManageEvent() {
+  const { eventToken } = useParams(); 
+
+  useEffect(() => {
+    async function fetchEventDetails() {
+      try {
+        const response = await axios.get(`/get_event_by_token/${eventToken}`);
+        sessionStorage.setItem("eventDetails", JSON.stringify(response.data));
+      } catch (error) {
+        console.error("Error fetching event details:", error);
+      }
+    }
+
+    fetchEventDetails();
+  }, [eventToken]);
+
   return (
     <div className="h-screen flex w-screen overflow-x-hidden z-50">
       <Sidebar />

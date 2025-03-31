@@ -35,7 +35,7 @@ export function SelectField({ label, options, className = "", ...props }) {
       </label>
       <select
         {...props}
-        className="grow bg-black text-gray-500 px-4 py-2 focus:outline-none appearance-none"
+        className="grow bg-black text-white px-4 py-2 focus:outline-none appearance-none"
         aria-label={label}
       >
         <option value="">Select {label}</option>
@@ -109,27 +109,18 @@ export default function EventForm() {
 
   const [formData, setFormData] = useState({
     name: "",
-    venue: "",
     method: "",
     start_date: null,
     start_time: "",
     end_date: null,
     end_time: "",
-    registrationStartDate: null,
-    registrationStartTime: "",
-    registrationEndDate: null,
-    registrationEndTime: "",
-    description: "",
     org_name: "",
     org_mail: "",
     type: "",
     privacy_type: "",
-    banner: "",
     mode: "",
-    ticketing: false,
-    forms: false,
-    team_min:  "",
-    team_max:  "",
+    team_min: null,
+    team_max: null,
 
   });
 
@@ -146,8 +137,8 @@ export default function EventForm() {
       ...data,
       start_time: `${data.start_time}:00`,
       end_time: `${data.end_time}:00`,
-      registrationStartTime: `${data.registrationStartTime}:00`,
-      registrationEndTime: `${data.registrationEndTime}:00`,
+      team_min: data.team_min ? parseInt(data.team_min) : null,
+      team_max: data.team_max ? parseInt(data.team_max) : null,
     };
     console.log(formattedData);
     axios
@@ -159,8 +150,8 @@ export default function EventForm() {
       .then((res) => {
         toast("Event created successfully");
         setTimeout(() => {
-          window.location.href = "/events";
-        }, 500);
+          window.location.href = "/manage-event/" + res.data.event_token + "/basic-details";
+        }, 700);
       })
       .catch((err) => {
         toast("An error occurred");

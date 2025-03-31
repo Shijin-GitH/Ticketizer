@@ -4,8 +4,11 @@ import { FaInfoCircle, FaMapMarkerAlt, FaSearch } from "react-icons/fa";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useDropzone } from "react-dropzone";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 function BasicDetails() {
+  const token = useParams().eventToken; // Extract the token from the URL
   const [eventName, setEventName] = useState("");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -61,26 +64,33 @@ function BasicDetails() {
   ];
 
   useEffect(() => {
-    // Load event details from sessionStorage
-    const storedEventDetails = sessionStorage.getItem("eventDetails");
-    if (storedEventDetails) {
-      const parsedDetails = JSON.parse(storedEventDetails);
-      setEventDetails(parsedDetails);
-      setEventName(parsedDetails.name || "");
-      setDescription(parsedDetails.description || "");
-      setStartDate(parsedDetails.startDate || "");
-      setStartTime(parsedDetails.startTime || "");
-      setEndDate(parsedDetails.endDate || "");
-      setEndTime(parsedDetails.endTime || "");
-      setMethod(parsedDetails.method || "");
-      setPrivacyType(parsedDetails.privacyType || "");
+    const fetchEventDetails = async () => {
+      try {
+        const response = await axios.get(
+          `/get_event_by_token/${token}/basic_details`
+        ); 
 
-      if (parsedDetails.venue) {
-        setVenue(`${parsedDetails.venue.name}, ${parsedDetails.venue.address}`);
-        setSelectedLocation(parsedDetails.venue);
+        const data = response.data;
+        setEventName(data.name || "");
+        setDescription(data.description || "");
+        setStartDate(data.start_date || "");
+        setStartTime(data.start_time || "");
+        setEndDate(data.end_date || "");
+        setEndTime(data.end_time || "");
+        setMethod(data.method || "");
+        setPrivacyType(data.privacy_type || "");
+        setLogo(data.banner || "");
+        if (data.venue) {
+          setVenue(data.venue);
+          setSelectedLocation({ name: data.venue, address: "" }); // Adjust as needed
+        }
+      } catch (error) {
+        console.error("Error fetching event details:", error);
       }
-    }
-  }, []);
+    };
+
+    fetchEventDetails();
+  }, [token]); // Add token as a dependency
 
   useEffect(() => {
     if (logo) {
