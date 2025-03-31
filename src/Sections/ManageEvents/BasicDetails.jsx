@@ -1,28 +1,125 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Dropdown from "../../Components/Dropdown";
-import { FaInfoCircle } from "react-icons/fa";
-import { DateTimeField, InputField, SelectField } from "../../Pages/EventForm";
+import { FaInfoCircle, FaMapMarkerAlt, FaSearch } from "react-icons/fa";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useDropzone } from "react-dropzone";
 
 function BasicDetails() {
-  const [startDate, setStartDate] = useState(null);
+  const [eventName, setEventName] = useState("");
+  const [description, setDescription] = useState("");
+  const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
-  const [endDate, setEndDate] = useState(null);
+  const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
   const [method, setMethod] = useState("");
   const [privacyType, setPrivacyType] = useState("");
   const [logo, setLogo] = useState(sessionStorage.getItem("eventLogo") || null);
+  const [venue, setVenue] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [eventDetails, setEventDetails] = useState({});
+  const [isSearchTriggered, setIsSearchTriggered] = useState(false);
 
   const PRIVACY_TYPES = ["Public", "Private", "Invite Only"];
   const METHOD_TYPES = ["In Person", "Virtual", "Hybrid"];
+
+  // Mock location search results
+  const mockLocations = [
+    {
+      id: 1,
+      name: "Golden Eye Cricket Ground",
+      address: "Kochi, Kerala, India",
+      coordinates: { lat: 9.9312, lng: 76.2673 },
+    },
+    {
+      id: 2,
+      name: "Jawaharlal Nehru Stadium",
+      address: "Kochi, Kerala, India",
+      coordinates: { lat: 9.9871, lng: 76.2989 },
+    },
+    {
+      id: 3,
+      name: "Regional Sports Centre",
+      address: "Kadavanthra, Kochi, India",
+      coordinates: { lat: 9.9675, lng: 76.2924 },
+    },
+    {
+      id: 4,
+      name: "Rajiv Gandhi Indoor Stadium",
+      address: "Kadavanthra, Kochi, India",
+      coordinates: { lat: 9.968, lng: 76.293 },
+    },
+    {
+      id: 5,
+      name: "Lulu International Convention Centre",
+      address: "Edappally, Kochi, India",
+      coordinates: { lat: 10.0261, lng: 76.3125 },
+    },
+  ];
+
+  useEffect(() => {
+    // Load event details from sessionStorage
+    const storedEventDetails = sessionStorage.getItem("eventDetails");
+    if (storedEventDetails) {
+      const parsedDetails = JSON.parse(storedEventDetails);
+      setEventDetails(parsedDetails);
+      setEventName(parsedDetails.name || "");
+      setDescription(parsedDetails.description || "");
+      setStartDate(parsedDetails.startDate || "");
+      setStartTime(parsedDetails.startTime || "");
+      setEndDate(parsedDetails.endDate || "");
+      setEndTime(parsedDetails.endTime || "");
+      setMethod(parsedDetails.method || "");
+      setPrivacyType(parsedDetails.privacyType || "");
+
+      if (parsedDetails.venue) {
+        setVenue(`${parsedDetails.venue.name}, ${parsedDetails.venue.address}`);
+        setSelectedLocation(parsedDetails.venue);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (logo) {
       sessionStorage.setItem("eventLogo", logo);
     }
   }, [logo]);
+
+  useEffect(() => {
+    // Save event details to sessionStorage whenever they change
+    const updatedEventDetails = {
+      ...eventDetails,
+      name: eventName,
+      description,
+      startDate,
+      startTime,
+      endTime,
+      endDate,
+      method,
+      privacyType,
+      venue: selectedLocation,
+      location: selectedLocation
+        ? `${selectedLocation.name}, ${selectedLocation.address}`
+        : venue,
+    };
+
+    setEventDetails(updatedEventDetails);
+    sessionStorage.setItem("eventDetails", JSON.stringify(updatedEventDetails));
+  }, [
+    eventName,
+    description,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    method,
+    privacyType,
+    selectedLocation,
+    venue,
+  ]);
 
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
@@ -35,7 +132,63 @@ function BasicDetails() {
     }
   };
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: "image/*" });
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: "image/*",
+  });
+
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    setVenue(query);
+    setIsSearchTriggered(false); // Reset search trigger on input change
+  };
+
+  const handleSearchClick = async () => {
+    const query = searchQuery.trim(); // Trim whitespace
+    if (query.length > 2) {
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+            query
+          )}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        const locations = data.map((place) => ({
+          id: place.place_id,
+          name: place.display_name.split(",")[0], // Use only the first part of the name
+          address: place.display_name,
+          coordinates: {
+            lat: parseFloat(place.lat),
+            lng: parseFloat(place.lon),
+          },
+        }));
+
+        setSearchResults(locations);
+        setShowSearchResults(true);
+        setIsSearchTriggered(true); // Mark search as triggered
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+        setSearchResults([]);
+        setShowSearchResults(false);
+      }
+    } else {
+      setSearchResults([]);
+      setShowSearchResults(false);
+    }
+  };
+
+  const handleLocationSelect = (location) => {
+    setVenue(`${location.name}, ${location.address}`);
+    setSelectedLocation(location);
+    setShowSearchResults(false);
+  };
 
   return (
     <Dropdown
@@ -43,50 +196,208 @@ function BasicDetails() {
       description="Basic event details"
       icon={<FaInfoCircle />}
     >
-      <InputField label="Event Name" />
-      <ReactQuill
-        placeholder="Please enter Event Description"
-        className="bg-white p-5 rounded-2xl text-black break-all h-74"
-      />
-      <div className="flex gap-3 my-10 items-center">
-        <div className="flex flex-col w-1/2 gap-10">
-          <DateTimeField
-            label={"Start"}
-            startDate={startDate}
-            startTime={startTime}
-            onDateChange={setStartDate}
-            onTimeChange={setStartTime}
+      <div className="bg-black text-white p-6 rounded-lg">
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">Event Name</label>
+          <input
+            type="text"
+            className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white"
+            placeholder="Enter event name"
+            value={eventName}
+            onChange={(e) => setEventName(e.target.value)}
           />
-          <DateTimeField
-            label={"End"}
-            startDate={endDate}
-            startTime={endTime}
-            onDateChange={setEndDate}
-            onTimeChange={setEndTime}
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">
+            Event Description
+          </label>
+          <ReactQuill
+            value={description}
+            onChange={setDescription}
+            placeholder="Please enter Event Description"
+            className="bg-white p-5 rounded-md text-black h-fit break-all"
+            theme="snow"
+            modules={{
+              toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ["bold", "italic", "underline", "strike"],
+                [{ list: "ordered" }, { list: "bullet" }],
+                ["link"],
+                ["clean"],
+              ],
+            }}
           />
-          <div className="flex flex-wrap gap-5 w-full">
-            <SelectField
-              label="Privacy type"
-              options={PRIVACY_TYPES}
-              value={privacyType}
-              onChange={(e) => setPrivacyType(e.target.value)}
-            />
-            <SelectField
-              label="Method"
-              options={METHOD_TYPES}
-              value={method}
-              onChange={(e) => setMethod(e.target.value)}
-            />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Start Date & Time
+            </label>
+            <div className="flex space-x-4">
+              <input
+                type="date"
+                className="flex-1 p-3 bg-gray-800 border border-gray-700 rounded-md text-white"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <input
+                type="time"
+                className="w-32 p-3 bg-gray-800 border border-gray-700 rounded-md text-white"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              End Date & Time
+            </label>
+            <div className="flex space-x-4">
+              <input
+                type="date"
+                className="flex-1 p-3 bg-gray-800 border border-gray-700 rounded-md text-white"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+              <input
+                type="time"
+                className="w-32 p-3 bg-gray-800 border border-gray-700 rounded-md text-white"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+              />
+            </div>
           </div>
         </div>
-        <div className="flex flex-col gap-5 w-1/2 px-5">
+
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">Venue</label>
+          <div className="relative">
+            <div className="flex items-center">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <FaMapMarkerAlt className="text-gray-400" />
+              </div>
+              <input
+                type="text"
+                className="w-full p-3 pl-10 bg-gray-800 border border-gray-700 rounded-md text-white"
+                placeholder="Search for a venue"
+                value={venue}
+                onChange={handleSearchChange}
+              />
+              <button
+                className="ml-2 p-3 bg-[#90FF00] cursor-pointer hover:bg-black border border-transparent hover:border-[#90FF00] transition duration-300 ease-in-out hover:text-white text-black rounded-md"
+                onClick={handleSearchClick}
+              >
+                Search
+              </button>
+            </div>
+
+            {showSearchResults && searchResults.length > 0 && (
+              <div className="absolute z-10 mt-1 w-full bg-gray-800 border border-gray-700 rounded-md shadow-lg max-h-60 overflow-auto">
+                {searchResults.map((location) => (
+                  <div
+                    key={location.id}
+                    className="p-3 hover:bg-gray-700 cursor-pointer"
+                    onClick={() => handleLocationSelect(location)}
+                  >
+                    <div className="font-medium">{location.name}</div>
+                    <div className="text-sm text-gray-400">
+                      {location.address}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {selectedLocation && (
+          <div className="mb-6">
+            <label className="block text-sm font-medium mb-2">
+              Location Preview
+            </label>
+            <div className="aspect-w-16 aspect-h-9">
+              <iframe
+                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(
+                  `${selectedLocation.name} ${selectedLocation.address}`
+                )}`}
+                className="w-full h-60 rounded-lg"
+                frameBorder="0"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                aria-hidden="false"
+                tabIndex="0"
+              ></iframe>
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Privacy Type
+            </label>
+            <select
+              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white"
+              value={privacyType}
+              onChange={(e) => setPrivacyType(e.target.value)}
+            >
+              <option value="" disabled>
+                Select privacy type
+              </option>
+              {PRIVACY_TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Event Method
+            </label>
+            <select
+              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white"
+              value={method}
+              onChange={(e) => setMethod(e.target.value)}
+            >
+              <option value="" disabled>
+                Select method
+              </option>
+              {METHOD_TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">Event Banner</label>
           <div
             {...getRootProps()}
-            className="border-dashed border-2 flex justify-center items-center w-full h-40 border-gray-300 rounded-lg p-5 text-center cursor-pointer hover:border-gray-500"
-            style={{ backgroundImage: logo ? `url(${logo})` : "none", backgroundSize: "cover", backgroundPosition: "center" }}
+            className="border-dashed border-2 flex justify-center items-center w-full h-60 border-gray-700 rounded-lg p-5 text-center cursor-pointer hover:border-[#90FF00] transition-colors"
+            style={{
+              backgroundImage: logo ? `url(${logo})` : "none",
+              backgroundSize: "contain",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
           >
             <input {...getInputProps()} />
-            {!logo && <p className="cursor-pointer">Add Event Logo</p>}
+            {!logo && (
+              <div className="text-gray-400">
+                <div className="text-4xl mb-2">+</div>
+                <p>Drag & drop an image here, or click to select one</p>
+                <p className="text-sm mt-2">
+                  Recommended size: 1200 x 630 pixels
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

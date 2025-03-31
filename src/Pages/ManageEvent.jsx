@@ -3,12 +3,15 @@ import {
   FaInfoCircle,
   FaTicketAlt,
   FaWpforms,
-  FaUsers
+  FaUsers,
+  FaMoneyBill
 } from "react-icons/fa";
-import { IoSettingsSharp } from "react-icons/io5";
+import { IoCash, IoSettingsSharp } from "react-icons/io5";
 import { Outlet, useLocation } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
 import UserDropdown from "../Components/UserMenu";
+import { TbCashBanknote } from "react-icons/tb";
+import { BiBriefcase, BiPhoneCall } from "react-icons/bi";
 
 function Sidebar() {
   const location = useLocation();
@@ -31,6 +34,21 @@ function Sidebar() {
       link: "/manage-event/add-admin",
       icon: <IoSettingsSharp />,
     },
+    {
+      text: "Bank Details",
+      link: "/manage-event/bank-details",
+      icon: <FaMoneyBill />,
+    },
+    {
+      text: "Contacts",
+      link: "/manage-event/contacts",
+      icon: <BiPhoneCall />,
+    },
+    {
+      text: "Terms & Conditions",
+      link: "/manage-event/terms-and-conditions",
+      icon: <BiBriefcase />,
+    }
   ];
 
   return (

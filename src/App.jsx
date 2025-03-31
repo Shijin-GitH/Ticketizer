@@ -18,6 +18,9 @@ import EventLanding from "./Pages/Event/EventLanding";
 import Registration from "./Pages/Event/Registration";
 import Payment from "./Pages/Event/Payment";
 import PaymentSuccess from "./Pages/Event/PaymentSuccess";
+import BankDetailsSection from "./Sections/ManageEvents/BankDetailsSection";
+import ContactsSection from "./Sections/ManageEvents/ContactsSection";
+import TermsAndConditionsSection from "./Sections/ManageEvents/TermsAndConditionsSection";
 
 function App() {
   axios.defaults.baseURL = "http://127.0.0.1:5000";
@@ -38,15 +41,21 @@ function App() {
             <Route path="/events" element={<ExploreEvents />} />
             <Route path="/create-event" element={<EventForm />} />
             <Route path="/my-events" element={<MyEvents />} />
-            <Route path="/manage-event/*" element={<ManageEvent />} >
+            <Route path="/manage-event/*" element={<ManageEvent />}>
               <Route path="event-details" element={<BasicDetails />} />
               <Route path="ticketing" element={<Ticketing />} />
               <Route path="forms" element={<FormsSection />} />
               <Route path="attendees" element={<Attendees />} />
               <Route path="add-admin" element={<AddAdmin />} />
+              <Route path="bank-details" element={<BankDetailsSection />} />
+              <Route path="contacts" element={<ContactsSection />} />
+              <Route
+                path="terms-and-conditions"
+                element={<TermsAndConditionsSection />}
+              />
             </Route>
             <Route path="/event" element={<EventLanding />} />
-            <Route path="/register" element={<Registration />} /> 
+            <Route path="/register" element={<Registration />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
           </Routes>

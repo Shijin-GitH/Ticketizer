@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { FaWpforms, FaEdit, FaTrash, FaPlus } from "react-icons/fa"
 import Dropdown from "../../Components/Dropdown"
@@ -73,6 +75,7 @@ function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
   const [fieldType, setFieldType] = useState("Text")
   const [instructions, setInstructions] = useState("")
   const [placeholder, setPlaceholder] = useState("")
+  const [options, setOptions] = useState("") // New state for options
   const [isEditing, setIsEditing] = useState(false)
   const [fieldId, setFieldId] = useState("")
 
@@ -85,6 +88,7 @@ function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
       setFieldType(fieldToEdit.type.charAt(0).toUpperCase() + fieldToEdit.type.slice(1))
       setInstructions(fieldToEdit.instructions || "")
       setPlaceholder(fieldToEdit.placeholder || "")
+      setOptions(fieldToEdit.options?.join(", ") || "") // Load options if available
       setIsEditing(true)
       setFieldId(fieldToEdit.id)
     }
@@ -100,6 +104,12 @@ function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
       editable: true,
       removable: true,
       instructions: instructions,
+      options:
+        fieldType.toLowerCase() === "radio" ||
+        fieldType.toLowerCase() === "select" ||
+        fieldType.toLowerCase() === "checkbox"
+          ? options.split(",").map((opt) => opt.trim())
+          : undefined, // Save options only for specific types
     }
 
     onSave(newField, isEditing)
@@ -148,7 +158,7 @@ function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
           </label>
           <div className="relative">
             <select
-              className="w-full p-2 border border-gray-300 rounded appearance-none"
+              className="w-full p-2 border bg-black border-gray-300 rounded appearance-none"
               value={fieldType}
               onChange={(e) => setFieldType(e.target.value)}
             >
@@ -165,6 +175,21 @@ function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
             </div>
           </div>
         </div>
+
+        {(fieldType === "Radio" || fieldType === "Select" || fieldType === "Checkbox") && (
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Options (comma-separated) <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter options separated by commas"
+              value={options}
+              onChange={(e) => setOptions(e.target.value)}
+            />
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium mb-1">Placeholder</label>
@@ -209,7 +234,7 @@ function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
 
 function FormField({ field, onEdit, onRemove }) {
   return (
-    <div className={`${field.removable ? "border border-gray-200 rounded-lg p-4" : ""}`}>
+    <div className={`mb-4 ${field.removable ? "border border-gray-200 rounded-lg p-4" : ""}`}>
       <div className="flex justify-between items-center mb-2">
         <label className="text-sm font-medium">
           {field.label} {field.required && <span className="text-red-500">*</span>}
@@ -229,7 +254,66 @@ function FormField({ field, onEdit, onRemove }) {
           )}
         </div>
       </div>
-      <input type={field.type} className="w-full p-2 border border-gray-300 rounded" placeholder={field.placeholder} />
+
+      {/* Render different field types */}
+      {field.type === "select" ? (
+        <select className="w-full p-2 border border-gray-300 rounded">
+          <option value="" disabled selected>
+            {field.placeholder || "Select an option"}
+          </option>
+          {field.options?.map((option, index) => (
+            <option key={index} value={typeof option === "object" ? option.value : option}>
+              {typeof option === "object" ? option.label : option}
+            </option>
+          ))}
+        </select>
+      ) : field.type === "radio" ? (
+        <div className="space-y-2">
+          {field.options?.map((option, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <input
+                type="radio"
+                id={`${field.id}-${index}`}
+                name={field.id}
+                value={typeof option === "object" ? option.value : option}
+              />
+              <label htmlFor={`${field.id}-${index}`} className="text-sm">
+                {typeof option === "object" ? option.label : option}
+              </label>
+            </div>
+          ))}
+        </div>
+      ) : field.type === "checkbox" && field.options ? (
+        <div className="space-y-2">
+          {field.options.map((option, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id={`${field.id}-${index}`}
+                name={`${field.id}[]`}
+                value={typeof option === "object" ? option.value : option}
+              />
+              <label htmlFor={`${field.id}-${index}`} className="text-sm">
+                {typeof option === "object" ? option.label : option}
+              </label>
+            </div>
+          ))}
+        </div>
+      ) : field.type === "checkbox" ? (
+        <div className="flex items-center gap-2">
+          <input type="checkbox" id={field.id} name={field.id} />
+          <label htmlFor={field.id} className="text-sm">
+            {field.label}
+          </label>
+        </div>
+      ) : (
+        <input
+          type={field.type}
+          className="w-full p-2 border border-gray-300 rounded"
+          placeholder={field.placeholder}
+        />
+      )}
+
       {field.instructions && <p className="mt-1 text-xs text-gray-500">{field.instructions}</p>}
     </div>
   )
@@ -270,6 +354,11 @@ function FormsSection() {
   }
 
   const handleSaveField = (field, isEditing) => {
+    // Ensure options are properly formatted
+    if (field.options && typeof field.options === "string") {
+      field.options = field.options.split(",").map((opt) => opt.trim())
+    }
+
     if (isEditing) {
       const updatedFields = formFields.map((f) => (f.id === field.id ? field : f))
       setFormFields(updatedFields)
