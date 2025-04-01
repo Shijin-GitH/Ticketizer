@@ -13,7 +13,6 @@ function Registration() {
   const [isLoading, setIsLoading] = useState(true);
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
-
   const navigate = useNavigate();
   const { eventToken } = useParams(); // Access the dynamic eventToken parameter
   const authToken = localStorage.getItem("token"); // Retrieve token from localStorage or other storage
@@ -146,7 +145,7 @@ function Registration() {
         form.action = "https://api.razorpay.com/v1/checkout/embedded";
 
         const fields = {
-          key_id: process.env.RZY_KEY_LIVE || "", // Ensure fallback for undefined
+          key_id: import.meta.env.VITE_RZY_KEY_LIVE,
           amount: selectedTicket.price * 100,
           currency: "INR",
           order_id,
