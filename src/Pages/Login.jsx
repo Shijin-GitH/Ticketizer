@@ -25,6 +25,7 @@ function Login() {
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isUserSet, setIsUserSet] = useState(false); // New state to track dispatch completion
   const dispatch = useDispatch();
 
   const toggleStayLoggedIn = () => {
@@ -33,7 +34,6 @@ function Login() {
 
   const handleLogin = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     if (!email) {
       toast.error("Email is required");
@@ -47,10 +47,6 @@ function Login() {
       toast.error("Password is required");
       return;
     }
-    // if (!passwordRegex.test(password)) {
-    //   toast.error("Password must be at least 8 characters long and contain letters, numbers, and special characters");
-    //   return;
-    // }
 
     axios
       .post("/login", {
@@ -67,12 +63,10 @@ function Login() {
             },
           })
           .then((resp) => {
+            toast.success("Login Successful");
             dispatch(setUser(resp.data));
+            setIsUserSet(true); // Set state to true after dispatch
           });
-        toast.success("Login Successful");
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 500);
       })
       .catch((err) => {
         if (err.response) {
@@ -101,6 +95,10 @@ function Login() {
       });
   };
 
+  // Redirect after dispatch is completed
+  if (isUserSet) {
+    window.location.href = "/";
+  }
   return (
     <>
       <Modal>

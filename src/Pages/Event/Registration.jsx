@@ -146,8 +146,8 @@ function Registration() {
         form.action = "https://api.razorpay.com/v1/checkout/embedded";
 
         const fields = {
-          key_id: "rzp_live_0zZ0hx9bETq1yb", // Replace with your Razorpay key ID
-          // key_id: "rzp_test_7gpuxwnlrAJLjB", // Replace with your Razorpay key ID
+          key_id: process.env.REACT_APP_RZY_KEY_LIVE, // Live key ID
+          // key_id_test: process.env.REACT_APP_RZY_KEY_TEST, // Test key ID
           amount: selectedTicket.price * 100,
           currency: "INR",
           order_id,
@@ -156,7 +156,7 @@ function Registration() {
           "prefill[contact]": formValues["team-phone"] || "",
           "prefill[email]": formValues["team-email"] || "",
           "notes[team name]": formValues["team-name"] || "",
-          callback_url: `https://7b42h9f8-5000.inc1.devtunnels.ms/payment_callback`, // Updated callback URL
+          callback_url: `https://backend-ticketizer.vercel.app/payment_callback`, // Updated callback URL
           cancel_url: `https://ticketizer.vercel.app/payment-cancel`, // Ensure valid URL
         };
 
