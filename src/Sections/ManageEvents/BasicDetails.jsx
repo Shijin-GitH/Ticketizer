@@ -166,7 +166,7 @@ function BasicDetails() {
       console.error("Error uploading banner:", error.response?.data || error);
     }
   };
- 
+
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
     if (file) {
@@ -232,7 +232,6 @@ function BasicDetails() {
     setShowSearchResults(false);
   };
 
-
   const handleSave = async () => {
     try {
       const formattedStartDate = startDate; // Already in YYYY-MM-DD format
@@ -243,7 +242,6 @@ function BasicDetails() {
       const formattedRegEndDate = registrationEndDate; // Already in YYYY-MM-DD format
       const formattedRegStartTime = registrationStartTime; // Already in HH:MM format
       const formattedRegEndTime = registrationEndTime; // Already in HH:MM format
-
 
       const payload = {
         name: eventName,

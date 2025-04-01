@@ -18,7 +18,7 @@ function EventCard({ event }) {
         <h1 className="text-xl">{event.name}</h1>
         <div className="flex items-center gap-2">
           <TbLocation className="text-xl" />
-          <p className="">{event.venue}</p>
+          <p className="">{event.venue && event.venue.split(",")[0]}</p>
         </div>
         <div className="flex items-center gap-2">
           <TbCalendarTime className="text-xl" />

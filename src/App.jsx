@@ -58,7 +58,7 @@ function App() {
                 element={<TermsAndConditionsSection />}
               />
             </Route>
-            <Route path="/event" element={<EventLanding />} />
+            <Route path="/event/:eventToken" element={<EventLanding />} />
             <Route path="/:eventToken/register" element={<Registration />} />
             {/* <Route path="/:eventToken/payment" element={<Payment />} /> */}
             <Route

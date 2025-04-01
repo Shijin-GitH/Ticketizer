@@ -95,21 +95,80 @@ function Sidebar() {
 }
 
 function Topbar() {
+  const { eventToken } = useParams();
+  const [eventStatus, setEventStatus] = React.useState("");
+  const [name, setName] = React.useState("");
+
+  useEffect(() => {
+    async function fetchEventStatus() {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`/fetch_event_status/${eventToken}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setEventStatus(response.data.status);
+        setName(response.data.name);
+      } catch (error) {
+        console.error("Error fetching event status:", error);
+      }
+    }
+
+    fetchEventStatus();
+  }, [eventToken]);
+
+  const updateEventStatus = async (status) => {
+    try {
+      const token = localStorage.getItem("token");
+      const endpoint =
+        status === "Published"
+          ? `/update_event_status/${eventToken}`
+          : `/update_event_status_unpublished/${eventToken}`;
+      await axios.put(
+        endpoint,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setEventStatus(status);
+      console.log(`Event status updated to: ${status}`); // Debugging log
+    } catch (error) {
+      console.error(`Error updating event status to ${status}:`, error);
+    }
+  };
+
+  console.log(eventStatus);
   return (
     <div className="topbar fixed h-24 bg-[#000] border-b left-64 -ml-0.5 border-l border-l-black border-b-[#90FF00] text-white shadow-md flex items-center px-6 justify-between">
       <div className="flex gap-10">
         <div className="flex flex-col">
-          <h1 className="text-xl font-semibold">aanga</h1>
-          <span className="text-yellow-500 text-sm font-medium">
-            ● NOT PUBLISHED
+          <h1 className="text-xl font-semibold">{name}</h1>
+          <span
+            className={`text-sm font-medium ${
+              eventStatus === "Published" ? "text-green-500" : "text-yellow-500"
+            }`}
+          >
+            ● {eventStatus}
           </span>
         </div>
         <div className="flex items-center gap-4">
-          <button className="px-4 py-2 border border-gray-400 rounded-md text-gray-600 hover:bg-gray-100 transition duration-300 ease-in-out cursor-pointer">
+          <button
+            className="px-4 py-2 border border-gray-400 rounded-md text-gray-600 hover:bg-gray-100 transition duration-300 ease-in-out cursor-pointer"
+            onClick={() => console.log("Preview clicked")}
+          >
             Preview
           </button>
-          <button className="px-4 py-2 bg-[#90FF00] text-black rounded-md hover:bg-black hover:text-white transition duration-300 ease-in-out border border-transparent hover:border-[#90FF00] cursor-pointer">
-            Publish
+          <button
+            className={`px-4 py-2 rounded-md transition duration-300 ease-in-out ${
+              eventStatus === "Published"
+                ? "bg-red-500 text-white hover:bg-red-700"
+                : "bg-[#90FF00] text-black hover:bg-black hover:text-white"
+            }`}
+            onClick={() =>
+              updateEventStatus(
+                eventStatus === "Published" ? "Unpublished" : "Published"
+              )
+            }
+          >
+            {eventStatus === "Published" ? "Unpublish" : "Publish"}
           </button>
         </div>
       </div>

@@ -356,9 +356,9 @@ function FormsSection() {
     }
   }, [eventToken]);
 
-  if (!formFields.length) {
-    return <LoadingSpinner />;
-  }
+  // if (!formFields.length) {
+  //   return <LoadingSpinner />;
+  // }
 
   const handleEditField = (field) => {
     setFieldToEdit(field);

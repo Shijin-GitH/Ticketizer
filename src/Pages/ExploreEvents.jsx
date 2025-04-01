@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import axios from "axios";
-import LoadingSpinner from "../Components/LoadingSpinner";
 
 function EventCard({
   regStartDate,
@@ -9,6 +8,7 @@ function EventCard({
   regEndDate,
   regEndTime,
   banner,
+  token
 }) {
   const [status, setStatus] = useState("Open");
 
@@ -27,7 +27,7 @@ function EventCard({
   }, [regStartDate, regStartTime, regEndDate, regEndTime]);
 
   return (
-    <div className="relative group h-fit hover:scale-[101%] overflow-hidden transition duration-300 ease-in-out w-fit">
+    <div onClick={() => window.location.href = `/event/${token}`} className="relative group h-fit hover:scale-[101%] overflow-hidden transition duration-300 ease-in-out w-fit">
       <img
         src={banner}
         className={`w-[40vw] rounded-3xl border-2 cursor-pointer hover:border-[#90FF00] transition ease-in-out duration-300 border-white ${
@@ -63,50 +63,43 @@ function ExploreEvents() {
   const [banners, setBanners] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("/fetch_banners")
-      .then((res) => {
-        console.log(res.data);
-        const sortedBanners = res.data.sort((a, b) => {
-          const currentDate = new Date();
-          const aStartDateTime = new Date(
-            `${a.registration_start_date}T${a.registration_start_time}`
-          );
-          const aEndDateTime = new Date(
-            `${a.registration_end_date}T${a.registration_end_time}`
-          );
-          const bStartDateTime = new Date(
-            `${b.registration_start_date}T${b.registration_start_time}`
-          );
-          const bEndDateTime = new Date(
-            `${b.registration_end_date}T${b.registration_end_time}`
-          );
+    axios.get("/fetch_banners").then((res) => {
+      console.log(res.data);
+      const sortedBanners = res.data.sort((a, b) => {
+        const currentDate = new Date();
+        const aStartDateTime = new Date(
+          `${a.registration_start_date}T${a.registration_start_time}`
+        );
+        const aEndDateTime = new Date(
+          `${a.registration_end_date}T${a.registration_end_time}`
+        );
+        const bStartDateTime = new Date(
+          `${b.registration_start_date}T${b.registration_start_time}`
+        );
+        const bEndDateTime = new Date(
+          `${b.registration_end_date}T${b.registration_end_time}`
+        );
 
-          const aStatus =
-            currentDate < aStartDateTime
-              ? "Opening Soon"
-              : currentDate > aEndDateTime
-              ? "Closed"
-              : "Open";
-          const bStatus =
-            currentDate < bStartDateTime
-              ? "Opening Soon"
-              : currentDate > bEndDateTime
-              ? "Closed"
-              : "Open";
+        const aStatus =
+          currentDate < aStartDateTime
+            ? "Opening Soon"
+            : currentDate > aEndDateTime
+            ? "Closed"
+            : "Open";
+        const bStatus =
+          currentDate < bStartDateTime
+            ? "Opening Soon"
+            : currentDate > bEndDateTime
+            ? "Closed"
+            : "Open";
 
-          if (aStatus === "Open" && bStatus !== "Open") return -1;
-          if (aStatus !== "Open" && bStatus === "Open") return 1;
-          return 0;
-        });
-        setBanners(sortedBanners);
-      })
-      .catch(() => setBanners([]));
+        if (aStatus === "Open" && bStatus !== "Open") return -1;
+        if (aStatus !== "Open" && bStatus === "Open") return 1;
+        return 0;
+      });
+      setBanners(sortedBanners);
+    });
   }, []);
-
-  if (!banners.length) {
-    return <LoadingSpinner />;
-  }
 
   return (
     <div className="w-screen h-screen flex flex-col items-center z-50">
@@ -122,6 +115,7 @@ function ExploreEvents() {
               regEndDate={banner.registration_end_date}
               regEndTime={banner.registration_end_time}
               banner={banner.banner}
+              token={banner.token} // Assuming you have a token for each banner
             />
           ))}
         </div>

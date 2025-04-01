@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -14,6 +12,7 @@ import {
 } from "react-icons/fa";
 import Navbar from "../../Components/Navbar";
 import Footer from "../../Components/Footer";
+import { useParams } from "react-router-dom";
 
 function EventLanding() {
   const [eventDetails, setEventDetails] = useState({});
@@ -22,7 +21,9 @@ function EventLanding() {
   const [bankDetails, setBankDetails] = useState({});
   const [activeTab, setActiveTab] = useState("overview");
 
+
   const navigate = useNavigate();
+  const { eventToken } = useParams(); // Access the dynamic eventToken parameter
 
   useEffect(() => {
     // Fetch event details from sessionStorage
@@ -75,7 +76,7 @@ function EventLanding() {
   }, []);
 
   const handleRegister = () => {
-    navigate("/register");
+    navigate(`/${eventToken}/register`);
   };
 
   const formatDate = (dateString) => {
