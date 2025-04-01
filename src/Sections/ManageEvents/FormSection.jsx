@@ -6,6 +6,7 @@ import Dropdown from "../../Components/Dropdown";
 import { Switch } from "../../Components/Switch";
 import axios from "axios"; // Import axios for API calls
 import { useParams } from "react-router-dom"; // Import useParams
+import LoadingSpinner from "../../Components/LoadingSpinner";
 
 function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
   const [fieldName, setFieldName] = useState("");
@@ -238,46 +239,52 @@ function FormField({ field, onEdit, onRemove }) {
           <option value="" disabled selected>
             {field.placeholder || "Select an option"}
           </option>
-          {field.options?.map((option, index) => (
-            <option
-              key={index}
-              value={typeof option === "object" ? option.value : option}
-            >
-              {typeof option === "object" ? option.label : option}
-            </option>
-          ))}
+          {field.options &&
+            Array.isArray(field.options) &&
+            field.options.map((option, index) => (
+              <option
+                key={index}
+                value={typeof option === "object" ? option.value : option}
+              >
+                {typeof option === "object" ? option.label : option}
+              </option>
+            ))}
         </select>
       ) : field.type === "radio" ? (
         <div className="space-y-2">
-          {field.options?.map((option, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <input
-                type="radio"
-                id={`${field.id}-${index}`}
-                name={field.id}
-                value={typeof option === "object" ? option.value : option}
-              />
-              <label htmlFor={`${field.id}-${index}`} className="text-sm">
-                {typeof option === "object" ? option.label : option}
-              </label>
-            </div>
-          ))}
+          {field.options &&
+            Array.isArray(field.options) &&
+            field.options.map((option, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  id={`${field.id}-${index}`}
+                  name={field.id}
+                  value={typeof option === "object" ? option.value : option}
+                />
+                <label htmlFor={`${field.id}-${index}`} className="text-sm">
+                  {typeof option === "object" ? option.label : option}
+                </label>
+              </div>
+            ))}
         </div>
       ) : field.type === "checkbox" && field.options ? (
         <div className="space-y-2">
-          {field.options.map((option, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id={`${field.id}-${index}`}
-                name={`${field.id}[]`}
-                value={typeof option === "object" ? option.value : option}
-              />
-              <label htmlFor={`${field.id}-${index}`} className="text-sm">
-                {typeof option === "object" ? option.label : option}
-              </label>
-            </div>
-          ))}
+          {field.options &&
+            Array.isArray(field.options) &&
+            field.options.map((option, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id={`${field.id}-${index}`}
+                  name={`${field.id}[]`}
+                  value={typeof option === "object" ? option.value : option}
+                />
+                <label htmlFor={`${field.id}-${index}`} className="text-sm">
+                  {typeof option === "object" ? option.label : option}
+                </label>
+              </div>
+            ))}
         </div>
       ) : field.type === "checkbox" ? (
         <div className="flex items-center gap-2">
@@ -348,6 +355,10 @@ function FormsSection() {
       fetchFormQuestions();
     }
   }, [eventToken]);
+
+  if (!formFields.length) {
+    return <LoadingSpinner />;
+  }
 
   const handleEditField = (field) => {
     setFieldToEdit(field);

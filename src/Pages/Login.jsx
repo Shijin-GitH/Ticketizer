@@ -59,6 +59,7 @@ function Login() {
       })
       .then((res) => {
         localStorage.setItem("token", res.data.token);
+        console.log(res.data.token);
         axios
           .get("/user_details", {
             headers: {

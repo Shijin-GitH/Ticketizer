@@ -6,6 +6,7 @@ import "react-quill/dist/quill.snow.css";
 import { useDropzone } from "react-dropzone";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import LoadingSpinner from "../../Components/LoadingSpinner"; // Import LoadingSpinner
 
 function BasicDetails() {
   const token = useParams().eventToken; // Extract the token from the URL
@@ -25,6 +26,12 @@ function BasicDetails() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [eventDetails, setEventDetails] = useState({});
   const [isSearchTriggered, setIsSearchTriggered] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [registrationStartDate, setRegistrationStartDate] = useState("");
+  const [registrationStartTime, setRegistrationStartTime] = useState("");
+  const [registrationEndDate, setRegistrationEndDate] = useState("");
+  const [registrationEndTime, setRegistrationEndTime] = useState("");
+  const userToken = localStorage.getItem("token"); // Get user token from local storage
 
   const PRIVACY_TYPES = ["Public", "Private", "Invite Only"];
   const METHOD_TYPES = ["In Person", "Virtual", "Hybrid"];
@@ -68,7 +75,7 @@ function BasicDetails() {
       try {
         const response = await axios.get(
           `/get_event_by_token/${token}/basic_details`
-        ); 
+        );
 
         const data = response.data;
         setEventName(data.name || "");
@@ -80,12 +87,18 @@ function BasicDetails() {
         setMethod(data.method || "");
         setPrivacyType(data.privacy_type || "");
         setLogo(data.banner || "");
+        setRegistrationStartDate(data.registration_start_date || ""); // Fetch registration start date
+        setRegistrationStartTime(data.registration_start_time || ""); // Fetch registration start time
+        setRegistrationEndDate(data.registration_end_date || ""); // Fetch registration end date
+        setRegistrationEndTime(data.registration_end_time || ""); // Fetch registration end time
         if (data.venue) {
           setVenue(data.venue);
           setSelectedLocation({ name: data.venue, address: "" }); // Adjust as needed
         }
+        setIsLoading(false); // Set loading to false after fetching
       } catch (error) {
         console.error("Error fetching event details:", error);
+        setIsLoading(false); // Set loading to false even on error
       }
     };
 
@@ -131,14 +144,33 @@ function BasicDetails() {
     venue,
   ]);
 
+  const uploadBannerToServer = async (file) => {
+    const formData = new FormData();
+    formData.append("photo", file);
+    formData.append("token", token); // Pass event_id
+
+    try {
+      const response = await axios.post("/upload_event_banner", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`, // Add Authorization if needed
+        },
+      });
+
+      if (response.data.banner_url) {
+        setLogo(response.data.banner_url);
+      } else {
+        console.error("Upload failed:", response.data.error);
+      }
+    } catch (error) {
+      console.error("Error uploading banner:", error.response?.data || error);
+    }
+  };
+ 
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogo(reader.result);
-      };
-      reader.readAsDataURL(file);
+      uploadBannerToServer(file); // Use the upload function
     }
   };
 
@@ -200,11 +232,62 @@ function BasicDetails() {
     setShowSearchResults(false);
   };
 
+
+  const handleSave = async () => {
+    try {
+      const formattedStartDate = startDate; // Already in YYYY-MM-DD format
+      const formattedEndDate = endDate; // Already in YYYY-MM-DD format
+      const formattedStartTime = startTime; // Already in HH:MM format
+      const formattedEndTime = endTime; // Already in HH:MM format
+      const formattedRegStartDate = registrationStartDate; // Already in YYYY-MM-DD format
+      const formattedRegEndDate = registrationEndDate; // Already in YYYY-MM-DD format
+      const formattedRegStartTime = registrationStartTime; // Already in HH:MM format
+      const formattedRegEndTime = registrationEndTime; // Already in HH:MM format
+
+
+      const payload = {
+        name: eventName,
+        description,
+        start_date: formattedStartDate,
+        start_time: `${formattedStartTime}`, // Add seconds
+        end_date: formattedEndDate,
+        end_time: `${formattedEndTime}`, // Add seconds
+        method,
+        privacy_type: privacyType,
+        venue,
+        registration_start_date: formattedRegStartDate,
+        registration_start_time: `${formattedRegStartTime}:00`, // Add seconds
+        registration_end_date: formattedRegEndDate,
+        registration_end_time: `${formattedRegEndTime}:00`, // Add seconds
+      };
+
+      console.log("Payload to be sent:", payload); // Log the payload
+
+      const response = await axios.put(`/update_event/${token}`, payload, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+
+      if (response.status === 200) {
+        alert("Event updated successfully!");
+      }
+    } catch (error) {
+      console.error("Error updating event:", error.response?.data || error);
+      alert("Failed to update event. Please try again.");
+    }
+  };
+
+  if (isLoading) {
+    return <LoadingSpinner />; // Show spinner while loading
+  }
+
   return (
     <Dropdown
       title="Event Details"
       description="Basic event details"
       icon={<FaInfoCircle />}
+      onClick={handleSave} // Pass handleSave to onClick
     >
       <div className="bg-black text-white p-6 rounded-lg">
         <div className="mb-6">
@@ -277,6 +360,48 @@ function BasicDetails() {
                 className="w-32 p-3 bg-gray-800 border border-gray-700 rounded-md text-white"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Registration Start Date & Time
+            </label>
+            <div className="flex space-x-4">
+              <input
+                type="date"
+                className="flex-1 p-3 bg-gray-800 border border-gray-700 rounded-md text-white"
+                value={registrationStartDate}
+                onChange={(e) => setRegistrationStartDate(e.target.value)}
+              />
+              <input
+                type="time"
+                className="w-32 p-3 bg-gray-800 border border-gray-700 rounded-md text-white"
+                value={registrationStartTime}
+                onChange={(e) => setRegistrationStartTime(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Registration End Date & Time
+            </label>
+            <div className="flex space-x-4">
+              <input
+                type="date"
+                className="flex-1 p-3 bg-gray-800 border border-gray-700 rounded-md text-white"
+                value={registrationEndDate}
+                onChange={(e) => setRegistrationEndDate(e.target.value)}
+              />
+              <input
+                type="time"
+                className="w-32 p-3 bg-gray-800 border border-gray-700 rounded-md text-white"
+                value={registrationEndTime}
+                onChange={(e) => setRegistrationEndTime(e.target.value)}
               />
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import axios from "axios";
+import LoadingSpinner from "../Components/LoadingSpinner";
 
 function EventCard({
   regStartDate,
@@ -62,43 +63,50 @@ function ExploreEvents() {
   const [banners, setBanners] = useState([]);
 
   useEffect(() => {
-    axios.get("/fetch_banners").then((res) => {
-      console.log(res.data);
-      const sortedBanners = res.data.sort((a, b) => {
-        const currentDate = new Date();
-        const aStartDateTime = new Date(
-          `${a.registration_start_date}T${a.registration_start_time}`
-        );
-        const aEndDateTime = new Date(
-          `${a.registration_end_date}T${a.registration_end_time}`
-        );
-        const bStartDateTime = new Date(
-          `${b.registration_start_date}T${b.registration_start_time}`
-        );
-        const bEndDateTime = new Date(
-          `${b.registration_end_date}T${b.registration_end_time}`
-        );
+    axios
+      .get("/fetch_banners")
+      .then((res) => {
+        console.log(res.data);
+        const sortedBanners = res.data.sort((a, b) => {
+          const currentDate = new Date();
+          const aStartDateTime = new Date(
+            `${a.registration_start_date}T${a.registration_start_time}`
+          );
+          const aEndDateTime = new Date(
+            `${a.registration_end_date}T${a.registration_end_time}`
+          );
+          const bStartDateTime = new Date(
+            `${b.registration_start_date}T${b.registration_start_time}`
+          );
+          const bEndDateTime = new Date(
+            `${b.registration_end_date}T${b.registration_end_time}`
+          );
 
-        const aStatus =
-          currentDate < aStartDateTime
-            ? "Opening Soon"
-            : currentDate > aEndDateTime
-            ? "Closed"
-            : "Open";
-        const bStatus =
-          currentDate < bStartDateTime
-            ? "Opening Soon"
-            : currentDate > bEndDateTime
-            ? "Closed"
-            : "Open";
+          const aStatus =
+            currentDate < aStartDateTime
+              ? "Opening Soon"
+              : currentDate > aEndDateTime
+              ? "Closed"
+              : "Open";
+          const bStatus =
+            currentDate < bStartDateTime
+              ? "Opening Soon"
+              : currentDate > bEndDateTime
+              ? "Closed"
+              : "Open";
 
-        if (aStatus === "Open" && bStatus !== "Open") return -1;
-        if (aStatus !== "Open" && bStatus === "Open") return 1;
-        return 0;
-      });
-      setBanners(sortedBanners);
-    });
+          if (aStatus === "Open" && bStatus !== "Open") return -1;
+          if (aStatus !== "Open" && bStatus === "Open") return 1;
+          return 0;
+        });
+        setBanners(sortedBanners);
+      })
+      .catch(() => setBanners([]));
   }, []);
+
+  if (!banners.length) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="w-screen h-screen flex flex-col items-center z-50">

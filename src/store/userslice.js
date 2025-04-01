@@ -10,6 +10,7 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload; // Save user JSON
+      console.log("User data saved:", action.payload); // Log user data
     },
     clearUser: (state) => {
       state.user = null; // Clear user on logout

@@ -5,6 +5,7 @@ import Logo from "../../assets/Logo.svg";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toBlob } from "html-to-image";
+import LoadingSpinner from "../../Components/LoadingSpinner";
 
 function PaymentSuccess() {
   const navigate = useNavigate();
@@ -29,34 +30,28 @@ function PaymentSuccess() {
     fetchTransactionDetails();
   }, [transactionID]);
 
-
-const handleDownloadTicket = () => {
-  const container = document.getElementById("ticket-container");
-  if (container) {
-    toBlob(container, {
-      width: container.scrollWidth,
-      height: container.scrollHeight,
-      backgroundColor: "#1a202c",
-    })
-      .then((blob) => {
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "ticket.png";
-        link.click();
+  const handleDownloadTicket = () => {
+    const container = document.getElementById("ticket-container");
+    if (container) {
+      toBlob(container, {
+        width: container.scrollWidth,
+        height: container.scrollHeight,
+        backgroundColor: "#1a202c",
       })
-      .catch((err) => {
-        console.error("Failed to capture ticket as image:", err);
-      });
-  }
-};
-
+        .then((blob) => {
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "ticket.png";
+          link.click();
+        })
+        .catch((err) => {
+          console.error("Failed to capture ticket as image:", err);
+        });
+    }
+  };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#90FF00]"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
   if (error) return <div className="text-center text-red-500">{error}</div>;
 

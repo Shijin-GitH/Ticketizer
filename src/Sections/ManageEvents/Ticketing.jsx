@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import Dropdown from "../../Components/Dropdown";
 import { FaTicketAlt } from "react-icons/fa";
 import axios from "axios";
+import LoadingSpinner from "../../Components/LoadingSpinner"; // Import LoadingSpinner
 
 function AddTicketSidebar({ closeSidebar, ticketToEdit, refreshTickets }) {
   const [ticketName, setTicketName] = useState(ticketToEdit?.name || "");
@@ -116,6 +117,7 @@ function Ticketing() {
   const [tickets, setTickets] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [ticketToEdit, setTicketToEdit] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
   const { eventToken } = useParams();
   const authToken = localStorage.getItem("authToken"); // Retrieve token from localStorage or other storage
 
@@ -127,14 +129,20 @@ function Ticketing() {
         },
       });
       setTickets(response.data);
+      setIsLoading(false); // Set loading to false after fetching
     } catch (error) {
       console.error("Error fetching tickets:", error);
+      setIsLoading(false); // Set loading to false even on error
     }
   };
 
   useEffect(() => {
     fetchTickets();
   }, [eventToken]);
+
+  if (isLoading) {
+    return <LoadingSpinner />; // Show spinner while loading
+  }
 
   const handleEdit = (ticket) => {
     setTicketToEdit(ticket);

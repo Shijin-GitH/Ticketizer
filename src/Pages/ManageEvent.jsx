@@ -13,6 +13,7 @@ import Logo from "../assets/Logo.svg";
 import UserDropdown from "../Components/UserMenu";
 import { TbCashBanknote } from "react-icons/tb";
 import { BiBriefcase, BiPhoneCall } from "react-icons/bi";
+import LoadingSpinner from "../Components/LoadingSpinner";
 
 function Sidebar() {
   const location = useLocation();
@@ -120,7 +121,7 @@ function Topbar() {
 }
 
 function ManageEvent() {
-  const { eventToken } = useParams(); 
+  const { eventToken } = useParams();
 
   useEffect(() => {
     async function fetchEventDetails() {
@@ -134,6 +135,10 @@ function ManageEvent() {
 
     fetchEventDetails();
   }, [eventToken]);
+
+  if (!sessionStorage.getItem("eventDetails")) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="h-screen flex w-screen overflow-x-hidden z-50">

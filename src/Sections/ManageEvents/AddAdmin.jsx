@@ -1,13 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Dropdown from "../../Components/Dropdown";
 import { FaUsers } from "react-icons/fa";
+import LoadingSpinner from "../../Components/LoadingSpinner"; // Import LoadingSpinner
 
 function AddAdmin() {
   const [email, setEmail] = useState("");
-  const [admins, setAdmins] = useState([
-    { id: 1, email: "admin1@example.com", name: "Admin One" },
-    { id: 2, email: "admin2@example.com", name: "Admin Two" },
-  ]);
+  const [admins, setAdmins] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
+
+  useEffect(() => {
+    // Simulate fetching admin data
+    setTimeout(() => {
+      setAdmins([
+        { id: 1, email: "admin1@example.com", name: "Admin One" },
+        { id: 2, email: "admin2@example.com", name: "Admin Two" },
+      ]);
+      setIsLoading(false); // Set loading to false after fetching
+    }, 1000);
+  }, []);
+
+  if (isLoading) {
+    return <LoadingSpinner />; // Show spinner while loading
+  }
 
   const handleAddAdmin = () => {
     if (email.trim() === "") {

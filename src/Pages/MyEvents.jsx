@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
+import LoadingSpinner from "../Components/LoadingSpinner";
 import banner from "../assets/banner.png";
 import axios from "axios";
 import { TbCalendarTime, TbLocation } from "react-icons/tb";
@@ -7,7 +8,7 @@ import { TbCalendarTime, TbLocation } from "react-icons/tb";
 function EventCard({ event }) {
   return (
     <div
-      className="h-80 w-100 bg-[#040404] z-50 flex flex-col gap-2 border-4 rounded-md border-white hover:scale-[101%] cursor-pointer hover:border-[#90FF00] transition ease-in-out duration-300"
+      className="h-80 w-100 bg-[#040404] z-30 flex flex-col gap-2 border-4 rounded-md border-white hover:scale-[101%] cursor-pointer hover:border-[#90FF00] transition ease-in-out duration-300"
       onClick={() =>
         (window.location.href = `/manage-event/${event.token}/basic-details`)
       }
@@ -32,6 +33,7 @@ function EventCard({ event }) {
 
 function MyEvents() {
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
@@ -42,8 +44,15 @@ function MyEvents() {
       })
       .then((res) => {
         setEvents(res.data);
-      });
+        console.log(res.data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="h-screen w-sccreen overflow-x-hidden overflow-y-auto">
