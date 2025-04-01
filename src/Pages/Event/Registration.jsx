@@ -146,8 +146,7 @@ function Registration() {
         form.action = "https://api.razorpay.com/v1/checkout/embedded";
 
         const fields = {
-          key_id: process.env.REACT_APP_RZY_KEY_LIVE, // Live key ID
-          // key_id_test: process.env.REACT_APP_RZY_KEY_TEST, // Test key ID
+          key_id: process.env.RZY_KEY_LIVE || "", // Ensure fallback for undefined
           amount: selectedTicket.price * 100,
           currency: "INR",
           order_id,
