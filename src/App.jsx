@@ -70,7 +70,7 @@ function App() {
               element={<PaymentFailed />}
             />
             <Route
-              path="/:transactionID/payment-cancel"
+              path="/payment-cancel"
               element={<PaymentCancelled />}
             />
             {/* <Route path="/payment-callback" element={<PaymentCallback />} /> */}
