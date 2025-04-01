@@ -66,7 +66,7 @@ function App() {
               element={<PaymentSuccess />}
             />
             <Route
-              path="/:transactionID/payment-failed"
+              path="/payment-failed"
               element={<PaymentFailed />}
             />
             <Route
