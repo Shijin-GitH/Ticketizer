@@ -1,70 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaPlus, FaEdit, FaTrash, FaTimes } from "react-icons/fa";
+import { useParams } from "react-router-dom";
 import Dropdown from "../../Components/Dropdown";
 import { FaTicketAlt } from "react-icons/fa";
-import { Switch } from "../../Components/Switch";
+import axios from "axios";
 
-const tickets = [
-  {
-    id: 1,
-    name: "IAS / WIE Members (Early Bird)",
-    price: "₹ 549",
-    quantity: 10,
-    sold: 4,
-    status: "Sale Ended",
-  },
-  {
-    id: 2,
-    name: "IEEE Members (Early Bird)",
-    price: "₹ 669",
-    quantity: 10,
-    sold: 4,
-    status: "Sale Ended",
-  },
-  {
-    id: 3,
-    name: "Non-IEEE Members (Early Bird)",
-    price: "₹ 919",
-    quantity: 25,
-    sold: 2,
-    status: "Sale Ended",
-  },
-  {
-    id: 4,
-    name: "IAS / WIE Members",
-    price: "₹ 849",
-    quantity: 100,
-    sold: 71,
-    status: "Sale Ended",
-  },
-  {
-    id: 5,
-    name: "IEEE Members",
-    price: "₹ 969",
-    quantity: 100,
-    sold: 8,
-    status: "Sale Ended",
-  },
-  {
-    id: 6,
-    name: "Non-IEEE Members",
-    price: "₹ 1289",
-    quantity: 100,
-    sold: 27,
-    status: "Sale Ended",
-  },
-];
+function AddTicketSidebar({ closeSidebar, ticketToEdit, refreshTickets }) {
+  const [ticketName, setTicketName] = useState(ticketToEdit?.name || "");
+  const [price, setPrice] = useState(ticketToEdit?.price || "");
+  const [quantity, setQuantity] = useState(ticketToEdit?.quantity || "");
+  const { eventToken } = useParams();
+  const authToken = localStorage.getItem("token"); // Retrieve token from localStorage or other storage
 
-function AddTicketSidebar({ closeSidebar }) {
-  const [ticketName, setTicketName] = useState("");
-  const [price, setPrice] = useState("");
-  const [quantity, setQuantity] = useState("");
+  useEffect(() => {
+    if (ticketToEdit) {
+      setTicketName(ticketToEdit.name);
+      setPrice(ticketToEdit.price);
+      setQuantity(ticketToEdit.quantity);
+    }
+  }, [ticketToEdit]);
+
+  const handleSave = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      };
+
+      if (ticketToEdit) {
+        // Update ticket
+        await axios.put(
+          `/${ticketToEdit.ticket_id}/edit_ticket`,
+          { name: ticketName, price, quantity },
+          config
+        );
+      } else {
+        // Add new ticket
+        await axios.post(
+          `/${eventToken}/create_ticket`,
+          { name: ticketName, price, quantity },
+          config
+        );
+      }
+      refreshTickets();
+      closeSidebar();
+    } catch (error) {
+      console.error("Error saving ticket:", error);
+    }
+  };
 
   return (
     <div className="fixed top-24 right-0 w-1/3 h-full py-10 bg-black shadow-lg border-l border-[#90FF00] flex flex-col p-6 z-50">
       {/* Sidebar Header */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-white">Add Ticket</h2>
+        <h2 className="text-xl font-semibold text-white">
+          {ticketToEdit ? "Edit Ticket" : "Add Ticket"}
+        </h2>
         <button
           className="text-white cursor-pointer hover:text-gray-800"
           onClick={closeSidebar}
@@ -88,9 +80,7 @@ function AddTicketSidebar({ closeSidebar }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-white">
-            Price
-          </label>
+          <label className="block text-sm font-medium text-white">Price</label>
           <input
             type="text"
             className="w-full p-2 border border-gray-300 rounded mt-1"
@@ -111,7 +101,10 @@ function AddTicketSidebar({ closeSidebar }) {
           />
         </div>
 
-        <button className="bg-[#90FF00] border boder-transparent transition duration-300 ease-in-out hover:text-white cursor-pointer hover:bg-black hover:border-[#90FF00] text-black px-4 py-2 rounded mt-4">
+        <button
+          className="bg-[#90FF00] border boder-transparent transition duration-300 ease-in-out hover:text-white cursor-pointer hover:bg-black hover:border-[#90FF00] text-black px-4 py-2 rounded mt-4"
+          onClick={handleSave}
+        >
           Save Ticket
         </button>
       </div>
@@ -120,7 +113,48 @@ function AddTicketSidebar({ closeSidebar }) {
 }
 
 function Ticketing() {
+  const [tickets, setTickets] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [ticketToEdit, setTicketToEdit] = useState(null);
+  const { eventToken } = useParams();
+  const authToken = localStorage.getItem("authToken"); // Retrieve token from localStorage or other storage
+
+  const fetchTickets = async () => {
+    try {
+      const response = await axios.get(`/${eventToken}/tickets`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      setTickets(response.data);
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTickets();
+  }, [eventToken]);
+
+  const handleEdit = (ticket) => {
+    setTicketToEdit(ticket);
+    setIsSidebarOpen(true);
+  };
+
+  const handleDelete = async (ticketId) => {
+    try {
+      await axios.delete(`/${ticketId}/delete_ticket`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      setTickets((prevTickets) =>
+        prevTickets.filter((ticket) => ticket.id !== ticketId)
+      );
+    } catch (error) {
+      console.error("Error deleting ticket:", error);
+    }
+  };
 
   return (
     <>
@@ -132,7 +166,10 @@ function Ticketing() {
         <div className="flex justify-end mb-4">
           <button
             className="bg-[#90FF00] hover:bg-black hover:text-white transition duration-300 ease-in-out border border-transparent hover:border-[#90FF00] cursor-pointer text-black px-4 py-2 rounded flex items-center gap-2"
-            onClick={() => setIsSidebarOpen(true)}
+            onClick={() => {
+              setTicketToEdit(null);
+              setIsSidebarOpen(true);
+            }}
           >
             <FaPlus /> Add Ticket
           </button>
@@ -149,21 +186,25 @@ function Ticketing() {
           </thead>
           <tbody>
             {tickets.map((ticket) => (
-              <tr key={ticket.id} className="border-b border-gray-200 hover:bg-gray-900">
-                <td className="p-3">
-                  {ticket.name}{" "}
-                  <span className="text-red-500 text-xs ml-2">
-                    {ticket.status}
-                  </span>
-                </td>
+              <tr
+                key={ticket.ticket_id}
+                className="border-b border-gray-200 hover:bg-gray-900 text-white"
+              >
+                <td className="p-3">{ticket.name} </td>
                 <td className="p-3">{ticket.price}</td>
                 <td className="p-3">{ticket.quantity}</td>
                 <td className="p-3">{ticket.sold}</td>
                 <td className="p-3 flex gap-3">
-                  <button className="text-gray-500 hover:text-gray-700">
+                  <button
+                    className="text-gray-500 hover:text-gray-700"
+                    onClick={() => handleEdit(ticket)}
+                  >
                     <FaEdit />
                   </button>
-                  <button className="text-red-500 hover:text-red-700">
+                  <button
+                    className="text-red-500 hover:text-red-700"
+                    onClick={() => handleDelete(ticket.ticket_id)}
+                  >
                     <FaTrash />
                   </button>
                 </td>
@@ -173,7 +214,11 @@ function Ticketing() {
         </table>
       </Dropdown>
       {isSidebarOpen && (
-        <AddTicketSidebar closeSidebar={() => setIsSidebarOpen(false)} />
+        <AddTicketSidebar
+          closeSidebar={() => setIsSidebarOpen(false)}
+          ticketToEdit={ticketToEdit}
+          refreshTickets={fetchTickets}
+        />
       )}
     </>
   );

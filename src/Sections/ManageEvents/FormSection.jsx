@@ -1,98 +1,47 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { FaWpforms, FaEdit, FaTrash, FaPlus } from "react-icons/fa"
-import Dropdown from "../../Components/Dropdown"
-import { Switch } from "../../Components/Switch"
-
-// Initial form fields
-const initialFormFields = [
-  {
-    id: "registrant-name",
-    label: "Registrant Name",
-    required: true,
-    placeholder: "Enter registrant name here.",
-    type: "text",
-    editable: true,
-    removable: false,
-    instructions: "",
-  },
-  {
-    id: "registrant-email",
-    label: "Registrant Email",
-    required: true,
-    placeholder: "Enter registrant email here.",
-    type: "email",
-    editable: true,
-    removable: false,
-    instructions: "",
-  },
-  {
-    id: "registrant-phone",
-    label: "Registrant Phone no",
-    required: true,
-    placeholder: "Enter registrant phone no here.",
-    type: "tel",
-    editable: true,
-    removable: false,
-    instructions: "",
-  },
-  {
-    id: "college-name",
-    label: "College Name",
-    required: true,
-    placeholder: "Enter college name",
-    type: "text",
-    editable: true,
-    removable: true,
-    instructions: "",
-  },
-  {
-    id: "ieee-membership",
-    label: "IEEE Membership ID",
-    required: true,
-    placeholder: "Non-IEEE members can type NIL",
-    type: "text",
-    editable: true,
-    removable: true,
-    instructions: "",
-  },
-  {
-    id: "workshop-track",
-    label: "Workshop Track",
-    required: true,
-    placeholder: "Only Beck N Protocol is available. Rest all is filled.",
-    type: "text",
-    editable: true,
-    removable: true,
-    instructions: "",
-  },
-]
+import { useState, useEffect } from "react";
+import { FaWpforms, FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import Dropdown from "../../Components/Dropdown";
+import { Switch } from "../../Components/Switch";
+import axios from "axios"; // Import axios for API calls
+import { useParams } from "react-router-dom"; // Import useParams
 
 function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
-  const [fieldName, setFieldName] = useState("")
-  const [isMandatory, setIsMandatory] = useState(false)
-  const [fieldType, setFieldType] = useState("Text")
-  const [instructions, setInstructions] = useState("")
-  const [placeholder, setPlaceholder] = useState("")
-  const [options, setOptions] = useState("") // New state for options
-  const [isEditing, setIsEditing] = useState(false)
-  const [fieldId, setFieldId] = useState("")
+  const [fieldName, setFieldName] = useState("");
+  const [isMandatory, setIsMandatory] = useState(false);
+  const [fieldType, setFieldType] = useState("Text");
+  const [instructions, setInstructions] = useState("");
+  const [placeholder, setPlaceholder] = useState("");
+  const [options, setOptions] = useState(""); // New state for options
+  const [isEditing, setIsEditing] = useState(false);
+  const [fieldId, setFieldId] = useState("");
 
-  const fieldTypes = ["Text", "Email", "Number", "Tel", "Select", "Checkbox", "Radio", "Date"]
+  const fieldTypes = [
+    "Text",
+    "Email",
+    "Number",
+    "Tel",
+    "Select",
+    "Checkbox",
+    "Radio",
+    "Date",
+  ];
 
   useEffect(() => {
     if (fieldToEdit) {
-      setFieldName(fieldToEdit.label)
-      setIsMandatory(fieldToEdit.required)
-      setFieldType(fieldToEdit.type.charAt(0).toUpperCase() + fieldToEdit.type.slice(1))
-      setInstructions(fieldToEdit.instructions || "")
-      setPlaceholder(fieldToEdit.placeholder || "")
-      setOptions(fieldToEdit.options?.join(", ") || "") // Load options if available
-      setIsEditing(true)
-      setFieldId(fieldToEdit.id)
+      setFieldName(fieldToEdit.label);
+      setIsMandatory(fieldToEdit.required);
+      setFieldType(
+        fieldToEdit.type.charAt(0).toUpperCase() + fieldToEdit.type.slice(1)
+      );
+      setInstructions(fieldToEdit.instructions || "");
+      setPlaceholder(fieldToEdit.placeholder || "");
+      setOptions(fieldToEdit.options?.join(", ") || ""); // Load options if available
+      setIsEditing(true);
+      setFieldId(fieldToEdit.id);
     }
-  }, [fieldToEdit])
+  }, [fieldToEdit]);
 
   const handleSave = () => {
     const newField = {
@@ -110,17 +59,22 @@ function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
         fieldType.toLowerCase() === "checkbox"
           ? options.split(",").map((opt) => opt.trim())
           : undefined, // Save options only for specific types
-    }
+    };
 
-    onSave(newField, isEditing)
-    closeSidebar()
-  }
+    onSave(newField, isEditing);
+    closeSidebar();
+  };
 
   return (
     <div className="fixed top-24 right-0 w-1/3 h-full bg-black shadow-lg border-l border-[#90FF00] flex flex-col p-6 z-50 text-black">
       <div className="flex justify-between items-center mb-6 text-white">
-        <h2 className="text-xl font-semibold">{isEditing ? "Edit Field" : "Form Builder"}</h2>
-        <button className="text-white cursor-pointer hover:text-gray-800" onClick={closeSidebar}>
+        <h2 className="text-xl font-semibold">
+          {isEditing ? "Edit Field" : "Form Builder"}
+        </h2>
+        <button
+          className="text-white cursor-pointer hover:text-gray-800"
+          onClick={closeSidebar}
+        >
           ✕
         </button>
       </div>
@@ -169,14 +123,26 @@ function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
               ))}
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 20 20" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <svg
+                className="h-5 w-5 text-gray-400"
+                fill="none"
+                viewBox="0 0 20 20"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </div>
           </div>
         </div>
 
-        {(fieldType === "Radio" || fieldType === "Select" || fieldType === "Checkbox") && (
+        {(fieldType === "Radio" ||
+          fieldType === "Select" ||
+          fieldType === "Checkbox") && (
           <div>
             <label className="block text-sm font-medium mb-1">
               Options (comma-separated) <span className="text-red-500">*</span>
@@ -229,25 +195,36 @@ function FormBuilder({ closeSidebar, fieldToEdit, onSave }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function FormField({ field, onEdit, onRemove }) {
   return (
-    <div className={`mb-4 ${field.removable ? "border border-gray-200 rounded-lg p-4" : ""}`}>
+    <div
+      className={`mb-4 ${
+        field.removable ? "border border-gray-200 rounded-lg p-4" : ""
+      }`}
+    >
       <div className="flex justify-between items-center mb-2">
         <label className="text-sm font-medium">
-          {field.label} {field.required && <span className="text-red-500">*</span>}
+          {field.label}{" "}
+          {field.required && <span className="text-red-500">*</span>}
         </label>
         <div className="flex gap-2">
           {field.editable && (
-            <button className="text-gray-500 hover:text-gray-700" onClick={() => onEdit(field)}>
+            <button
+              className="text-gray-500 hover:text-gray-700"
+              onClick={() => onEdit(field)}
+            >
               <FaEdit size={14} />
               <span className="ml-1 text-xs">Edit</span>
             </button>
           )}
           {field.removable && (
-            <button className="text-gray-500 hover:text-gray-700" onClick={() => onRemove(field.id)}>
+            <button
+              className="text-gray-500 hover:text-gray-700"
+              onClick={() => onRemove(field.id)}
+            >
               <FaTrash size={14} />
               <span className="ml-1 text-xs">Remove</span>
             </button>
@@ -262,7 +239,10 @@ function FormField({ field, onEdit, onRemove }) {
             {field.placeholder || "Select an option"}
           </option>
           {field.options?.map((option, index) => (
-            <option key={index} value={typeof option === "object" ? option.value : option}>
+            <option
+              key={index}
+              value={typeof option === "object" ? option.value : option}
+            >
               {typeof option === "object" ? option.label : option}
             </option>
           ))}
@@ -314,63 +294,120 @@ function FormField({ field, onEdit, onRemove }) {
         />
       )}
 
-      {field.instructions && <p className="mt-1 text-xs text-gray-500">{field.instructions}</p>}
+      {field.instructions && (
+        <p className="mt-1 text-xs text-gray-500">{field.instructions}</p>
+      )}
     </div>
-  )
+  );
 }
 
 function FormsSection() {
-  const [isCustomFormEnabled, setIsCustomFormEnabled] = useState(true)
-  const [isFormBuilderOpen, setIsFormBuilderOpen] = useState(false)
-  const [formFields, setFormFields] = useState([])
-  const [fieldToEdit, setFieldToEdit] = useState(null)
+  const [isCustomFormEnabled, setIsCustomFormEnabled] = useState(true);
+  const [isFormBuilderOpen, setIsFormBuilderOpen] = useState(false);
+  const [formFields, setFormFields] = useState([]);
+  const [fieldToEdit, setFieldToEdit] = useState(null);
 
-  // Load form fields from sessionStorage on component mount
-  useEffect(() => {
-    const savedFields = sessionStorage.getItem("formFields")
-    if (savedFields) {
-      setFormFields(JSON.parse(savedFields))
-    } else {
-      setFormFields(initialFormFields)
-      sessionStorage.setItem("formFields", JSON.stringify(initialFormFields))
-    }
-  }, [])
+  const { eventToken } = useParams(); // Get eventToken from URL params
 
-  // Save form fields to sessionStorage whenever they change
+  // Fetch the token from localStorage
+  const authToken = localStorage.getItem("token");
+
+  // Axios configuration for authorization
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+  };
+
+  // Fetch form questions from the backend
   useEffect(() => {
-    if (formFields.length > 0) {
-      sessionStorage.setItem("formFields", JSON.stringify(formFields))
+    const fetchFormQuestions = async () => {
+      try {
+        const response = await axios.get(
+          `/${eventToken}/form_questions`,
+          axiosConfig
+        );
+        const questions = response.data.map((q) => ({
+          id: q.question_id,
+          label: q.question,
+          required: true, // Assuming all questions are mandatory
+          placeholder: "",
+          type: q.question_type.toLowerCase(),
+          editable: true,
+          removable: true,
+          instructions: "",
+          options: q.options || undefined,
+        }));
+        setFormFields(questions);
+      } catch (error) {
+        console.error("Error fetching form questions:", error);
+      }
+    };
+
+    if (eventToken) {
+      fetchFormQuestions();
     }
-  }, [formFields])
+  }, [eventToken]);
 
   const handleEditField = (field) => {
-    setFieldToEdit(field)
-    setIsFormBuilderOpen(true)
-  }
+    setFieldToEdit(field);
+    setIsFormBuilderOpen(true);
+  };
 
-  const handleRemoveField = (fieldId) => {
-    const updatedFields = formFields.filter((field) => field.id !== fieldId)
-    setFormFields(updatedFields)
-  }
-
-  const handleSaveField = (field, isEditing) => {
-    // Ensure options are properly formatted
-    if (field.options && typeof field.options === "string") {
-      field.options = field.options.split(",").map((opt) => opt.trim())
+  const handleRemoveField = async (fieldId) => {
+    try {
+      await axios.delete(`/form_questions/${fieldId}`, axiosConfig);
+      const updatedFields = formFields.filter((field) => field.id !== fieldId);
+      setFormFields(updatedFields);
+    } catch (error) {
+      console.error("Error deleting form question:", error);
     }
+  };
 
-    if (isEditing) {
-      const updatedFields = formFields.map((f) => (f.id === field.id ? field : f))
-      setFormFields(updatedFields)
-    } else {
-      setFormFields([...formFields, field])
+  const handleSaveField = async (field, isEditing) => {
+    try {
+      if (isEditing) {
+        await axios.put(
+          `/form_questions/${field.id}`,
+          {
+            question_type: field.type,
+            question: field.label,
+            options: field.options,
+          },
+          axiosConfig
+        );
+        const updatedFields = formFields.map((f) =>
+          f.id === field.id ? field : f
+        );
+        setFormFields(updatedFields);
+      } else {
+        const response = await axios.post(
+          `/${eventToken}/form_questions`,
+          {
+            question_type: field.type,
+            question: field.label,
+            options: field.options,
+          },
+          axiosConfig
+        );
+        setFormFields([
+          ...formFields,
+          { ...field, id: response.data.question_id },
+        ]);
+      }
+      setFieldToEdit(null);
+    } catch (error) {
+      console.error("Error saving form question:", error);
     }
-    setFieldToEdit(null)
-  }
+  };
 
   return (
     <>
-      <Dropdown title="Forms" description="Add, edit dynamic forms for your event" icon={<FaWpforms />}>
+      <Dropdown
+        title="Forms"
+        description="Add, edit dynamic forms for your event"
+        icon={<FaWpforms />}
+      >
         <div className="flex justify-between items-center mb-6 mt-4">
           <span className="text-gray-300">Add custom form for your event</span>
           <Switch
@@ -386,8 +423,8 @@ function FormsSection() {
               <button
                 className="bg-[#90FF00] hover:bg-black hover:text-white transition duration-300 ease-in-out border border-transparent hover:border-[#90FF00] cursor-pointer text-black px-4 py-2 rounded flex items-center gap-2"
                 onClick={() => {
-                  setFieldToEdit(null)
-                  setIsFormBuilderOpen(true)
+                  setFieldToEdit(null);
+                  setIsFormBuilderOpen(true);
                 }}
               >
                 <FaPlus /> Create new field
@@ -395,7 +432,12 @@ function FormsSection() {
             </div>
 
             {formFields.map((field) => (
-              <FormField key={field.id} field={field} onEdit={handleEditField} onRemove={handleRemoveField} />
+              <FormField
+                key={field.id}
+                field={field}
+                onEdit={handleEditField}
+                onRemove={handleRemoveField}
+              />
             ))}
           </div>
         )}
@@ -404,16 +446,15 @@ function FormsSection() {
       {isFormBuilderOpen && (
         <FormBuilder
           closeSidebar={() => {
-            setIsFormBuilderOpen(false)
-            setFieldToEdit(null)
+            setIsFormBuilderOpen(false);
+            setFieldToEdit(null);
           }}
           fieldToEdit={fieldToEdit}
           onSave={handleSaveField}
         />
       )}
     </>
-  )
+  );
 }
 
-export default FormsSection
-
+export default FormsSection;

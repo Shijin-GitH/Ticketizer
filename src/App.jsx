@@ -21,10 +21,11 @@ import PaymentSuccess from "./Pages/Event/PaymentSuccess";
 import BankDetailsSection from "./Sections/ManageEvents/BankDetailsSection";
 import ContactsSection from "./Sections/ManageEvents/ContactsSection";
 import TermsAndConditionsSection from "./Sections/ManageEvents/TermsAndConditionsSection";
+import PaymentCallback from "./Pages/Event/PaymentCallback";
 
 function App() {
-  // axios.defaults.baseURL = "http://127.0.0.1:5000";
-  axios.defaults.baseURL = "https://7b42h9f8-5000.inc1.devtunnels.ms/";
+  axios.defaults.baseURL = "http://127.0.0.1:5000";
+  // axios.defaults.baseURL = "https://7b42h9f8-5000.inc1.devtunnels.ms/";
 
   return (
     <>
@@ -56,9 +57,13 @@ function App() {
               />
             </Route>
             <Route path="/event" element={<EventLanding />} />
-            <Route path="/register" element={<Registration />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/:eventToken/register" element={<Registration />} />
+            <Route path="/:eventToken/payment" element={<Payment />} />
+            <Route
+              path="/:transactionID/payment-success"
+              element={<PaymentSuccess />}
+            />
+            <Route path="/payment-callback" element={<PaymentCallback />} />
           </Routes>
         </div>
       </Router>
