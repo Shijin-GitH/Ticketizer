@@ -9,8 +9,6 @@ const UserDropdown = () => {
   const containerRef = useRef(null);
   const dispatch = useDispatch();  
   const user = useSelector((state) => state.user.user);
-  console.log(user);
-
   const handleClickOutside = (event) => {
     if (containerRef.current && !containerRef.current.contains(event.target)) {
       setVisible(false);

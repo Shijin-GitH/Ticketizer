@@ -98,7 +98,6 @@ function Topbar() {
   const { eventToken } = useParams();
   const [eventStatus, setEventStatus] = React.useState("");
   const [name, setName] = React.useState("");
-
   useEffect(() => {
     async function fetchEventStatus() {
       try {
@@ -106,7 +105,7 @@ function Topbar() {
         const response = await axios.get(`/fetch_event_status/${eventToken}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setEventStatus(response.data.status);
+        setEventStatus(response.data.status[0]);
         setName(response.data.name);
       } catch (error) {
         console.error("Error fetching event status:", error);
@@ -114,7 +113,7 @@ function Topbar() {
     }
 
     fetchEventStatus();
-  }, [eventToken]);
+  }, []);
 
   const updateEventStatus = async (status) => {
     try {
@@ -195,9 +194,9 @@ function ManageEvent() {
     fetchEventDetails();
   }, [eventToken]);
 
-  if (!sessionStorage.getItem("eventDetails")) {
-    return <LoadingSpinner />;
-  }
+  // if (!sessionStorage.getItem("eventDetails")) {
+  //   return <LoadingSpinner />;
+  // }
 
   return (
     <div className="h-screen flex w-screen overflow-x-hidden z-50">

@@ -13,6 +13,7 @@ import {
 import Navbar from "../../Components/Navbar";
 import Footer from "../../Components/Footer";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 function EventLanding() {
   const [eventDetails, setEventDetails] = useState({});
@@ -21,59 +22,45 @@ function EventLanding() {
   const [bankDetails, setBankDetails] = useState({});
   const [activeTab, setActiveTab] = useState("overview");
 
-
   const navigate = useNavigate();
   const { eventToken } = useParams(); // Access the dynamic eventToken parameter
 
   useEffect(() => {
-    // Fetch event details from sessionStorage
-    const storedEventDetails = sessionStorage.getItem("eventDetails");
-    if (storedEventDetails) {
-      setEventDetails(JSON.parse(storedEventDetails));
-    } else {
-      // Default event details if none are found
-      setEventDetails({
-        name: "Prathidhwani Premier League (PPL) - Cricket Tournament",
-        description:
-          "Join us for an exhilarating season of cricket with the Prathidhwani Premier League, where IT professionals from across Kochi come together to showcase their cricketing prowess. Dive into the competitive spirit of the game and enjoy a series of matches designed to test your skills and teamwork.",
-        startDate: "2025-05-10",
-        startTime: "08:14",
-        endDate: "2025-05-11",
-        endTime: "10:14",
-        location: "Golden Eye Cricket Ground, Kochi, Kerala, India",
-        coordinates: { lat: 9.9312, lng: 76.2673 },
-        method: "In Person",
-        privacyType: "Public",
-        logo: sessionStorage.getItem("eventLogo") || null,
-        organizer: "Prathidhwani Kerala",
-        attendees: 116,
-        maxAttendees: 200,
-        venue: {
-          name: "Golden Eye Cricket Ground",
-          address: "Kochi, Kerala, India",
-          coordinates: { lat: 9.9312, lng: 76.2673 },
-        },
-      });
-    }
+    const fetchEventData = async () => {
+      try {
+        const response = await axios.get(`/get_event_details/${eventToken}`);
+        const {
+          name,
+          description,
+          start_date,
+          start_time,
+          end_date,
+          end_time,
+          organiser_name,
+          venue,
+          tickets,
+          banner
+        } = response.data;
 
-    // Fetch contacts from sessionStorage
-    const storedContacts = sessionStorage.getItem("eventContacts");
-    if (storedContacts) {
-      setContacts(JSON.parse(storedContacts));
-    }
+        setEventDetails({
+          name,
+          description,
+          startDate: start_date,
+          startTime: start_time,
+          endDate: end_date,
+          endTime: end_time,
+          organizer: organiser_name,
+          location: venue,
+          tickets,
+          banner: banner,
+        });
+      } catch (error) {
+        console.error("Error fetching event data:", error);
+      }
+    };
 
-    // Fetch terms and conditions from sessionStorage
-    const storedTerms = sessionStorage.getItem("termsAndConditions");
-    if (storedTerms) {
-      setTermsAndConditions(JSON.parse(storedTerms));
-    }
-
-    // Fetch bank details from sessionStorage
-    const storedBankDetails = sessionStorage.getItem("bankDetails");
-    if (storedBankDetails) {
-      setBankDetails(JSON.parse(storedBankDetails));
-    }
-  }, []);
+    fetchEventData();
+  }, [eventToken]);
 
   const handleRegister = () => {
     navigate(`/${eventToken}/register`);
@@ -89,6 +76,7 @@ function EventLanding() {
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+  console.log(eventDetails)
 
   return (
     <div className="min-h-screen z-50 text-white">
@@ -98,9 +86,9 @@ function EventLanding() {
       {/* Hero Section with Banner */}
       <div className="pt-16">
         <div className="relative h-96 bg-gradient-to-r from-blue-900 to-blue-700 overflow-hidden">
-          {eventDetails.logo ? (
+          {eventDetails.banner ? (
             <img
-              src={eventDetails.logo || "/placeholder.svg"}
+              src={eventDetails.banner || "/placeholder.svg"}
               alt={eventDetails.name}
               className="absolute inset-0 w-full h-full object-cover opacity-30"
             />
@@ -281,27 +269,18 @@ function EventLanding() {
                     <FaTicketAlt className="mr-2 text-[#90FF00]" /> Tickets
                   </h3>
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center border-b border-gray-800 pb-3">
-                      <div>
-                        <p className="font-medium">IAS / WIE Members</p>
-                        <p className="text-gray-400">₹ 849</p>
+                    {eventDetails.tickets?.map((ticket, index) => (
+                      <div
+                        key={ticket.ticket_id}
+                        className="flex justify-between items-center border-b border-gray-800 pb-3"
+                      >
+                        <div>
+                          <p className="font-medium">{ticket.name}</p>
+                          <p className="text-gray-400">₹ {ticket.price}</p>
+                        </div>
+                        <div className="text-sm text-gray-400">Available</div>
                       </div>
-                      <div className="text-sm text-gray-400">29 remaining</div>
-                    </div>
-                    <div className="flex justify-between items-center border-b border-gray-800 pb-3">
-                      <div>
-                        <p className="font-medium">IEEE Members</p>
-                        <p className="text-gray-400">₹ 969</p>
-                      </div>
-                      <div className="text-sm text-gray-400">92 remaining</div>
-                    </div>
-                    <div className="flex justify-between items-center border-b border-gray-800 pb-3">
-                      <div>
-                        <p className="font-medium">Non-IEEE Members</p>
-                        <p className="text-gray-400">₹ 1289</p>
-                      </div>
-                      <div className="text-sm text-gray-400">73 remaining</div>
-                    </div>
+                    ))}
                   </div>
                   <button
                     className="w-full mt-6 px-6 py-3 bg-[#90FF00] text-black font-semibold rounded-md hover:bg-black hover:text-white transition duration-300 ease-in-out border border-transparent hover:border-[#90FF00]"
@@ -328,8 +307,7 @@ function EventLanding() {
                     tabIndex="0"
                   ></iframe>
                 </div>
-                <p className="text-gray-300">{eventDetails.venue?.name}</p>
-                <p className="text-gray-400">{eventDetails.venue?.address}</p>
+                <p className="text-gray-300">{eventDetails.location}</p>
               </div>
 
               {/* Organizer */}

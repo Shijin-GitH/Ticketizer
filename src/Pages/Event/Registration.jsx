@@ -146,8 +146,8 @@ function Registration() {
         form.action = "https://api.razorpay.com/v1/checkout/embedded";
 
         const fields = {
-          // key_id: "rzp_live_0zZ0hx9bETq1yb", // Replace with your Razorpay key ID
-          key_id: "rzp_test_7gpuxwnlrAJLjB", // Replace with your Razorpay key ID
+          key_id: "rzp_live_0zZ0hx9bETq1yb", // Replace with your Razorpay key ID
+          // key_id: "rzp_test_7gpuxwnlrAJLjB", // Replace with your Razorpay key ID
           amount: selectedTicket.price * 100,
           currency: "INR",
           order_id,
