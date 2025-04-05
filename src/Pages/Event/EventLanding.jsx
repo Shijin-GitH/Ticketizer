@@ -79,7 +79,7 @@ function EventLanding() {
   console.log(eventDetails)
 
   return (
-    <div className="min-h-screen z-50 text-white">
+    <div className="min-h-screen z-50 text-white flex flex-col">
       {/* Navbar */}
       <Navbar />
 

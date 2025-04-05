@@ -31,13 +31,13 @@ function App() {
 
   return (
     <>
-      <SplashCursor
+      {/* <SplashCursor
         BACK_COLOR={{ r: 0.1, g: 0.1, b: 0.1 }} // Dark background
         SPLAT_INTERVAL={1500} // Splats every 1.5 seconds
         SPLAT_FORCE={3000} // Gentle splats
-      />
+      /> */}
       <Router>
-        <div className="absolute overflow-x-hidden scrollbar-none font-primary select-none flex flex-col inset-0 h-screen w-screen bg-black bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:70px_70px]">
+        <div className="overflow-x-hidden font-primary select-none flex flex-col h-screen w-screen bg-black bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:70px_70px]">
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
