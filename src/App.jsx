@@ -26,7 +26,8 @@ import PaymentFailed from "./Pages/Event/PaymentFailed";
 import PaymentCancelled from "./Pages/Event/PaymentCancelled";
 
 function App() {
-  axios.defaults.baseURL = "https://backend-ticketizer.vercel.app";
+  axios.defaults.baseURL = "http://localhost:5000";
+  // axios.defaults.baseURL = "https://backend-ticketizer.vercel.app";
   // axios.defaults.baseURL = "https://7b42h9f8-5000.inc1.devtunnels.ms/";
 
   return (

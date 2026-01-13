@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "react-clock/dist/Clock.css";
+// import "react-clock/dist/Clock.css";
 import Navbar from "../Components/Navbar";
 import axios from "axios";
 import { toast } from "react-toastify";
